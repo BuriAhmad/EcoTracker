@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep">
+
+    <!-- ── Scrollable content ─────────────────────────────────────── -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cardYourRank">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/screen_padding_horizontal"
+            android:paddingTop="@dimen/screen_padding_top"
+            android:paddingBottom="@dimen/spacing_base">
+
+            <!-- ── Header ──────────────────────────────────────────── -->
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leaderboard"
+                android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+                android:textColor="@color/text_primary" />
+
+            <!-- ── Time-period Chips ───────────────────────────────── -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupPeriod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipWeek"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This Week"
+                    android:textColor="@color/text_primary"
+                    app:chipBackgroundColor="@color/bg_card"
+                    app:checkedIconEnabled="false"
+                    app:chipStrokeColor="@color/accent_green"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMonth"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This Month"
+                    android:textColor="@color/text_primary"
+                    app:chipBackgroundColor="@color/bg_card"
+                    app:checkedIconEnabled="false"
+                    app:chipStrokeColor="@color/accent_green"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAllTime"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All Time"
+                    android:textColor="@color/text_primary"
+                    android:checked="true"
+                    app:chipBackgroundColor="@color/bg_card"
+                    app:checkedIconEnabled="false"
+                    app:chipStrokeColor="@color/accent_green"
+                    app:chipStrokeWidth="1dp" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- ── Podium (Top 3) ──────────────────────────────────── -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/podiumContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <!-- 2nd place (left) -->
+                <LinearLayout
+                    android:id="@+id/podiumSecond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_sm"
+                    android:background="@drawable/bg_podium_gradient"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/podiumFirst"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🥈"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:id="@+id/ivSecondAvatar"
+                        android:layout_width="@dimen/podium_avatar_second"
+                        android:layout_height="@dimen/podium_avatar_second"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:background="@drawable/bg_avatar_circle"
+                        android:src="@drawable/ic_person_24"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="2nd place" />
+
+                    <TextView
+                        android:id="@+id/tvSecondName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                        android:textColor="@color/text_primary"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Sam" />
+
+                    <TextView
+                        android:id="@+id/tvSecondPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.Label"
+                        android:textColor="@color/accent_green"
+                        tools:text="980 pts" />
+                </LinearLayout>
+
+                <!-- 1st place (center — tallest) -->
+                <LinearLayout
+                    android:id="@+id/podiumFirst"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_sm"
+                    android:background="@drawable/bg_podium_gradient"
+                    app:layout_constraintStart_toEndOf="@id/podiumSecond"
+                    app:layout_constraintEnd_toStartOf="@id/podiumThird"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🥇"
+                        android:textSize="24sp" />
+
+                    <ImageView
+                        android:id="@+id/ivFirstAvatar"
+                        android:layout_width="@dimen/podium_avatar_first"
+                        android:layout_height="@dimen/podium_avatar_first"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:background="@drawable/bg_avatar_circle"
+                        android:src="@drawable/ic_person_24"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="1st place" />
+
+                    <TextView
+                        android:id="@+id/tvFirstName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textAppearance="@style/TextAppearance.Eco.Body"
+                        android:textColor="@color/text_primary"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Alex" />
+
+                    <TextView
+                        android:id="@+id/tvFirstPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                        android:textColor="@color/accent_green"
+                        tools:text="1,250 pts" />
+                </LinearLayout>
+
+                <!-- 3rd place (right) -->
+                <LinearLayout
+                    android:id="@+id/podiumThird"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_sm"
+                    android:background="@drawable/bg_podium_gradient"
+                    app:layout_constraintStart_toEndOf="@id/podiumFirst"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🥉"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:id="@+id/ivThirdAvatar"
+                        android:layout_width="@dimen/podium_avatar_third"
+                        android:layout_height="@dimen/podium_avatar_third"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:background="@drawable/bg_avatar_circle"
+                        android:src="@drawable/ic_person_24"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="3rd place" />
+
+                    <TextView
+                        android:id="@+id/tvThirdName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                        android:textColor="@color/text_primary"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Jordan" />
+
+                    <TextView
+                        android:id="@+id/tvThirdPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.Label"
+                        android:textColor="@color/accent_green"
+                        tools:text="750 pts" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- ── Rankings header ─────────────────────────────────── -->
+            <TextView
+                android:id="@+id/tvRankingsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:text="Rankings"
+                android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                android:textColor="@color/text_primary" />
+
+            <!-- ── Ranked list ─────────────────────────────────────── -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRanked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_leaderboard_entry"
+                tools:itemCount="5" />
+
+            <!-- ── Loading indicator ───────────────────────────────── -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_base"
+                android:visibility="gone"
+                android:indeterminateTint="@color/accent_green" />
+
+            <!-- Empty state -->
+            <TextView
+                android:id="@+id/tvEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xxl"
+                android:gravity="center"
+                android:text="No one on the leaderboard yet.\nBe the first!"
+                android:textAppearance="@style/TextAppearance.Eco.Body"
+                android:textColor="@color/text_muted"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ── Your Rank sticky card ───────────────────────────────────── -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardYourRank"
+        style="@style/Widget.Eco.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
+        android:layout_marginBottom="@dimen/spacing_sm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/card_padding">
+
+            <TextView
+                android:id="@+id/tvYourRankLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Rank"
+                android:textAppearance="@style/TextAppearance.Eco.Body"
+                android:textColor="@color/text_secondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/tvYourRankValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Eco.TitleLarge"
+                android:textColor="@color/accent_green"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="#5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

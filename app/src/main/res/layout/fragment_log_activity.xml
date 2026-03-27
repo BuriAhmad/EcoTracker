@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/screen_padding_horizontal"
+        android:paddingBottom="@dimen/spacing_xxl">
+
+        <!-- ═══ HEADER ═══ -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/screen_padding_top"
+            android:text="Log Activity"
+            android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+            app:layout_constraintEnd_toStartOf="@id/btn_qr_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="What did you do?"
+            android:textAppearance="@style/TextAppearance.Eco.Body"
+            android:textColor="@color/text_muted"
+            app:layout_constraintEnd_toStartOf="@id/btn_qr_scan"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <ImageButton
+            android:id="@+id/btn_qr_scan"
+            android:layout_width="@dimen/icon_xl"
+            android:layout_height="@dimen/icon_xl"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Scan QR code"
+            android:src="@drawable/ic_qr_code_scanner_24"
+            app:layout_constraintBottom_toBottomOf="@id/tv_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_title"
+            app:tint="@color/accent_cyan" />
+
+        <!-- ═══ ACTIVITY GRID ═══ -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_activity_grid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_subtitle" />
+
+        <!-- ═══ QUANTITY STEPPER (hidden until activity selected) ═══ -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_activity_grid">
+
+            <TextView
+                android:id="@+id/tv_how_much"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How much?"
+                android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_minus"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginTop="@dimen/spacing_base"
+                app:backgroundTint="@color/bg_card"
+                app:cornerRadius="@dimen/radius_round"
+                app:icon="@drawable/ic_remove_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="24dp"
+                app:iconTint="@color/text_primary"
+                app:layout_constraintEnd_toStartOf="@id/tv_quantity"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_how_much" />
+
+            <TextView
+                android:id="@+id/tv_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xl"
+                android:layout_marginEnd="@dimen/spacing_xl"
+                android:minWidth="80dp"
+                android:gravity="center"
+                android:text="1"
+                android:textAppearance="@style/TextAppearance.Eco.HeroNumber"
+                app:layout_constraintBaseline_toBaselineOf="@id/btn_minus"
+                app:layout_constraintEnd_toStartOf="@id/tv_unit"
+                app:layout_constraintStart_toEndOf="@id/btn_minus" />
+
+            <TextView
+                android:id="@+id/tv_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_xl"
+                android:text="km"
+                android:textAppearance="@style/TextAppearance.Eco.Body"
+                android:textColor="@color/text_muted"
+                app:layout_constraintBaseline_toBaselineOf="@id/tv_quantity"
+                app:layout_constraintEnd_toStartOf="@id/btn_plus"
+                app:layout_constraintStart_toEndOf="@id/tv_quantity" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_plus"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginTop="@dimen/spacing_base"
+                app:backgroundTint="@color/bg_card"
+                app:cornerRadius="@dimen/radius_round"
+                app:icon="@drawable/ic_add_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="24dp"
+                app:iconTint="@color/accent_green"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_unit"
+                app:layout_constraintTop_toBottomOf="@id/tv_how_much" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- ═══ IMPACT PREVIEW CARD ═══ -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_impact_preview"
+            style="@style/Widget.Eco.Card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_quantity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Impact Preview"
+                    android:textAppearance="@style/TextAppearance.Eco.TitleMedium" />
+
+                <TextView
+                    android:id="@+id/tv_preview_co2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:drawablePadding="@dimen/spacing_sm"
+                    android:text="🌿 0.00 kg CO₂ saved"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_green" />
+
+                <TextView
+                    android:id="@+id/tv_preview_water"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="💧 0.0 L water saved"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_cyan" />
+
+                <TextView
+                    android:id="@+id/tv_preview_waste"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="♻️ 0.00 kg waste diverted"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/color_recycling" />
+
+                <TextView
+                    android:id="@+id/tv_preview_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="⭐ +0 points"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_amber" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═══ SUBMIT BUTTON ═══ -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit"
+            style="@style/Widget.Eco.Button.Primary"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:enabled="false"
+            android:text="Log Activity"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_impact_preview" />
+
+        <!-- Loading -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/accent_green"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/btn_submit"
+            app:layout_constraintEnd_toEndOf="@id/btn_submit"
+            app:layout_constraintStart_toStartOf="@id/btn_submit"
+            app:layout_constraintTop_toTopOf="@id/btn_submit" />
+
+        <!-- Daily Count -->
+        <TextView
+            android:id="@+id/tv_daily_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:layout_marginBottom="@dimen/spacing_xxl"
+            android:text="0 of 20 daily logs used"
+            android:textAppearance="@style/TextAppearance.Eco.Label"
+            android:textColor="@color/text_muted"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_submit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

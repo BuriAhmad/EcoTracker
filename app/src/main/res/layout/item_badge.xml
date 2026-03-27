@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/badgeRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_xs">
+
+    <!-- Badge container (80dp square) -->
+    <FrameLayout
+        android:id="@+id/badgeFrame"
+        android:layout_width="@dimen/badge_grid_item"
+        android:layout_height="@dimen/badge_grid_item"
+        android:background="@drawable/bg_glass_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Badge icon -->
+        <ImageView
+            android:id="@+id/ivBadgeIcon"
+            android:layout_width="@dimen/icon_xl"
+            android:layout_height="@dimen/icon_xl"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_emoji_events_24"
+            android:contentDescription="Badge icon"
+            app:tint="@color/accent_amber" />
+
+        <!-- Lock overlay for unearned badges -->
+        <ImageView
+            android:id="@+id/ivLockOverlay"
+            android:layout_width="@dimen/icon_medium"
+            android:layout_height="@dimen/icon_medium"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_lock_24"
+            android:visibility="gone"
+            android:contentDescription="Locked badge"
+            app:tint="@color/text_muted" />
+    </FrameLayout>
+
+    <!-- Badge name -->
+    <TextView
+        android:id="@+id/tvBadgeName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xxs"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badgeFrame"
+        tools:text="First Log" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

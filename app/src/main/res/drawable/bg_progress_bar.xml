@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Proper horizontal progress bar drawable for streak / badge progress -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background track -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bg_elevated" />
+            <corners android:radius="@dimen/radius_sm" />
+        </shape>
+    </item>
+
+    <!-- Filled progress -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/accent_green" />
+                <corners android:radius="@dimen/radius_sm" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">EcoTrack</string>
+
+    <!-- Bottom Nav -->
+    <string name="nav_home">Home</string>
+    <string name="nav_log">Log</string>
+    <string name="nav_board">Board</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Auth -->
+    <string name="login_title">EcoTrack</string>
+    <string name="login_subtitle">Track your impact</string>
+    <string name="hint_email">Email address</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_create_account">Create Account</string>
+    <string name="link_register">Don\'t have an account? Create one</string>
+    <string name="link_login">Already have an account? Sign In</string>
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Join the green movement</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_department">Department</string>
+
+    <!-- Departments -->
+    <string name="dept_cs">Computer Science</string>
+    <string name="dept_env">Environmental Sciences</string>
+    <string name="dept_eng">Engineering</string>
+    <string name="dept_bus">Business</string>
+    <string name="dept_arts">Arts &amp; Humanities</string>
+    <string name="dept_social">Social Sciences</string>
+    <string name="dept_natural">Natural Sciences</string>
+    <string name="dept_other">Other</string>
+
+    <!-- Activity Types -->
+    <string name="activity_biking">Biking</string>
+    <string name="activity_walking">Walking</string>
+    <string name="activity_recycling">Recycling</string>
+    <string name="activity_water_save">Water Save</string>
+    <string name="activity_energy">Energy Saving</string>
+    <string name="activity_plastic_free">Plastic-Free</string>
+
+    <!-- General -->
+    <string name="btn_log_activity">Log Activity</string>
+    <string name="btn_scan_qr">Scan QR</string>
+    <string name="btn_sign_out">Sign Out</string>
+    <string name="loading">Loading…</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+</resources>

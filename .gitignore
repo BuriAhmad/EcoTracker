@@ -1,4 +1,29 @@
+# macOS
 .DS_Store
+
+# Logs
 *.log
+
+# Node
 node_modules/
+
+# Secrets
 .env
+local.properties
+
+# Android build outputs
+*.apk
+*.aab
+*.ap_
+build/
+.gradle/
+captures/
+app/build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Kotlin/Java class files
+*.class

@@ -1,0 +1,119 @@
+package com.ecotrack.app.viewmodel;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.ecotrack.app.model.Badge;
+import com.ecotrack.app.model.BadgeDefinition;
+import com.ecotrack.app.model.User;
+import com.ecotrack.app.repository.UserRepository;
+import com.ecotrack.app.util.Constants;
+import com.ecotrack.app.util.EcoScoreCalculator;
+import com.ecotrack.app.util.StreakManager;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * UI state for the Profile screen.
+ * User data, badges (earned + definitions), streak info, impact breakdown.
+ */
+public class ProfileViewModel extends ViewModel {
+
+    private final FirebaseFirestore db;
+    private final UserRepository userRepository;
+
+    private final MutableLiveData<User> user = new MutableLiveData<>();
+    private final MutableLiveData<List<BadgeDefinition>> badgeDefinitions = new MutableLiveData<>();
+    private final MutableLiveData<List<Badge>> earnedBadges = new MutableLiveData<>();
+    private final MutableLiveData<Integer> ecoScore = new MutableLiveData<>(0);
+    private final MutableLiveData<String> ecoLevel = new MutableLiveData<>("Eco Newcomer");
+    private final MutableLiveData<Double> streakMultiplier = new MutableLiveData<>(1.0);
+
+    public ProfileViewModel() {
+        db = FirebaseFirestore.getInstance();
+        userRepository = new UserRepository();
+    }
+
+    // ── Exposed LiveData ─────────────────────────────────────────────────
+
+    public LiveData<User> getUser() { return user; }
+    public LiveData<List<BadgeDefinition>> getBadgeDefinitions() { return badgeDefinitions; }
+    public LiveData<List<Badge>> getEarnedBadges() { return earnedBadges; }
+    public LiveData<Integer> getEcoScore() { return ecoScore; }
+    public LiveData<String> getEcoLevel() { return ecoLevel; }
+    public LiveData<Double> getStreakMultiplier() { return streakMultiplier; }
+
+    // ── Load ─────────────────────────────────────────────────────────────
+
+    public void loadProfile() {
+        loadUserData();
+        loadBadgeDefinitions();
+        loadEarnedBadges();
+    }
+
+    private void loadUserData() {
+        String userId = getCurrentUserId();
+        if (userId == null) return;
+
+        userRepository.getUserDocument(userId).addOnSuccessListener(doc -> {
+            if (doc == null || !doc.exists()) return;
+            User u = doc.toObject(User.class);
+            if (u == null) return;
+
+            user.setValue(u);
+
+            // Compute eco-score
+            int score = EcoScoreCalculator.calculateEcoScore(
+                    u.getTotalCo2Saved(), u.getTotalWasteDiverted(),
+                    u.getTotalWaterSaved(), u.getCurrentStreak());
+            ecoScore.setValue(score);
+            ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
+
+            // Streak multiplier
+            double mult = StreakManager.getMultiplier(u.getCurrentStreak());
+            streakMultiplier.setValue(mult);
+        });
+    }
+
+    private void loadBadgeDefinitions() {
+        db.collection(Constants.COLLECTION_BADGE_DEFINITIONS).get()
+                .addOnSuccessListener(snapshot -> {
+                    List<BadgeDefinition> defs = new ArrayList<>();
+                    for (DocumentSnapshot d : snapshot) {
+                        BadgeDefinition def = d.toObject(BadgeDefinition.class);
+                        if (def != null) defs.add(def);
+                    }
+                    badgeDefinitions.setValue(defs);
+                });
+    }
+
+    private void loadEarnedBadges() {
+        String userId = getCurrentUserId();
+        if (userId == null) return;
+
+        db.collection(Constants.COLLECTION_USERS).document(userId)
+                .collection(Constants.COLLECTION_BADGES).get()
+                .addOnSuccessListener(snapshot -> {
+                    List<Badge> badges = new ArrayList<>();
+                    for (DocumentSnapshot d : snapshot) {
+                        Badge b = d.toObject(Badge.class);
+                        if (b != null) badges.add(b);
+                    }
+                    earnedBadges.setValue(badges);
+                });
+    }
+
+    public void logout() {
+        userRepository.signOut();
+    }
+
+    private String getCurrentUserId() {
+        return userRepository.getCurrentUser() != null
+                ? userRepository.getCurrentUser().getUid() : null;
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "711824791490",
+    "project_id": "saturn-events",
+    "storage_bucket": "saturn-events.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711824791490:android:9a9e4bc067c844f454285b",
+        "android_client_info": {
+          "package_name": "com.example.saturn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSEJ1IvEQwEA3dPDCj3Duj7laMfrqZGj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <!-- ==================== AUTH ==================== -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.ecotrack.app.view.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.ecotrack.app.view.auth.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_register_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_register_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- ==================== BOTTOM NAV: HOME ==================== -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ecotrack.app.view.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_dashboard"
+            app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_home_to_notifications"
+            app:destination="@id/notificationSettingsFragment" />
+        <action
+            android:id="@+id/action_home_to_search"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_home_to_feed"
+            app:destination="@id/feedFragment" />
+    </fragment>
+
+    <!-- ==================== BOTTOM NAV: LOG ==================== -->
+    <fragment
+        android:id="@+id/logActivityFragment"
+        android:name="com.ecotrack.app.view.logging.LogActivityFragment"
+        android:label="Log Activity"
+        tools:layout="@layout/fragment_log_activity">
+        <action
+            android:id="@+id/action_log_to_qr"
+            app:destination="@id/qrScannerFragment" />
+        <argument
+            android:name="activityType"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="locationName"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/qrScannerFragment"
+        android:name="com.ecotrack.app.view.logging.QrScannerFragment"
+        android:label="QR Scanner"
+        tools:layout="@layout/fragment_qr_scanner">
+        <action
+            android:id="@+id/action_qr_to_log"
+            app:destination="@id/logActivityFragment" />
+    </fragment>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.ecotrack.app.view.dashboard.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <!-- ==================== BOTTOM NAV: BOARD ==================== -->
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.ecotrack.app.view.leaderboard.LeaderboardFragment"
+        android:label="Leaderboard"
+        tools:layout="@layout/fragment_leaderboard">
+        <action
+            android:id="@+id/action_board_to_teams"
+            app:destination="@id/teamListFragment" />
+        <action
+            android:id="@+id/action_board_to_challenges"
+            app:destination="@id/challengesFragment" />
+    </fragment>
+
+    <!-- ==================== CHALLENGES ==================== -->
+    <fragment
+        android:id="@+id/challengesFragment"
+        android:name="com.ecotrack.app.view.challenges.ChallengesFragment"
+        android:label="Challenges"
+        tools:layout="@layout/fragment_challenges">
+        <action
+            android:id="@+id/action_challenges_to_detail"
+            app:destination="@id/challengeDetailFragment" />
+        <action
+            android:id="@+id/action_challenges_to_create"
+            app:destination="@id/createChallengeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/challengeDetailFragment"
+        android:name="com.ecotrack.app.view.challenges.ChallengeDetailFragment"
+        android:label="Challenge Detail"
+        tools:layout="@layout/fragment_challenge_detail">
+        <argument
+            android:name="challengeId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createChallengeFragment"
+        android:name="com.ecotrack.app.view.challenges.CreateChallengeFragment"
+        android:label="Create Challenge"
+        tools:layout="@layout/fragment_create_challenge" />
+
+    <!-- ==================== SOCIAL FEED ==================== -->
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.ecotrack.app.view.social.FeedFragment"
+        android:label="Campus Feed"
+        tools:layout="@layout/fragment_feed">
+        <action
+            android:id="@+id/action_feed_to_search"
+            app:destination="@id/searchFragment" />
+    </fragment>
+
+    <!-- ==================== TEAMS ==================== -->
+    <fragment
+        android:id="@+id/teamListFragment"
+        android:name="com.ecotrack.app.view.teams.TeamListFragment"
+        android:label="Teams"
+        tools:layout="@layout/fragment_team_list">
+        <action
+            android:id="@+id/action_teams_to_detail"
+            app:destination="@id/teamDetailFragment" />
+        <action
+            android:id="@+id/action_teams_to_create"
+            app:destination="@id/createTeamFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/teamDetailFragment"
+        android:name="com.ecotrack.app.view.teams.TeamDetailFragment"
+        android:label="Team Detail"
+        tools:layout="@layout/fragment_team_detail">
+        <argument
+            android:name="teamId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createTeamFragment"
+        android:name="com.ecotrack.app.view.teams.CreateTeamFragment"
+        android:label="Create Team"
+        tools:layout="@layout/fragment_create_team" />
+
+    <!-- ==================== BOTTOM NAV: PROFILE ==================== -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.ecotrack.app.view.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_edit"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profile_to_badge_detail"
+            app:destination="@id/badgeDetailFragment" />
+        <action
+            android:id="@+id/action_profile_to_notifications"
+            app:destination="@id/notificationSettingsFragment" />
+        <action
+            android:id="@+id/action_profile_to_admin"
+            app:destination="@id/adminAnalyticsFragment" />
+        <action
+            android:id="@+id/action_profile_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.ecotrack.app.view.profile.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/action_edit_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/badgeDetailFragment"
+        android:name="com.ecotrack.app.view.profile.BadgeDetailFragment"
+        android:label="Badge Detail"
+        tools:layout="@layout/fragment_badge_detail">
+        <argument
+            android:name="badgeType"
+            app:argType="string" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/notificationSettingsFragment"
+        android:name="com.ecotrack.app.view.profile.NotificationSettingsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notification_settings" />
+
+    <!-- ==================== ADMIN ==================== -->
+    <fragment
+        android:id="@+id/adminAnalyticsFragment"
+        android:name="com.ecotrack.app.view.admin.AdminAnalyticsFragment"
+        android:label="Admin Panel"
+        tools:layout="@layout/fragment_admin_analytics">
+        <action
+            android:id="@+id/action_admin_to_create_challenge"
+            app:destination="@id/createChallengeFragment" />
+    </fragment>
+
+    <!-- ==================== SEARCH ==================== -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.ecotrack.app.view.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_search_to_challenge_detail"
+            app:destination="@id/challengeDetailFragment" />
+        <action
+            android:id="@+id/action_search_to_team_detail"
+            app:destination="@id/teamDetailFragment" />
+    </fragment>
+
+</navigation>

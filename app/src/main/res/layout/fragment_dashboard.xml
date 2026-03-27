@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/screen_padding_horizontal"
+        android:paddingBottom="@dimen/spacing_xxl">
+
+        <!-- ═══ HEADER ═══ -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/screen_padding_top"
+            android:text="My Dashboard"
+            android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- ═══ ECO-SCORE RING ═══ -->
+        <com.ecotrack.app.view.home.EcoScoreRingView
+            android:id="@+id/eco_score_ring"
+            android:layout_width="@dimen/eco_score_ring_size"
+            android:layout_height="@dimen/eco_score_ring_size"
+            android:layout_marginTop="@dimen/spacing_xl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+        <TextView
+            android:id="@+id/tv_eco_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:text="Your Eco Score"
+            android:textAppearance="@style/TextAppearance.Eco.Label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/eco_score_ring" />
+
+        <TextView
+            android:id="@+id/tv_eco_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="Eco Newcomer"
+            android:textAppearance="@style/TextAppearance.Eco.BodyMedium"
+            android:textColor="@color/text_accent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_eco_label" />
+
+        <!-- ═══ IMPACT STATS ROW ═══ -->
+        <LinearLayout
+            android:id="@+id/layout_stats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_eco_level">
+
+            <!-- CO₂ -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_stat_co2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.0"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_green" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="kg CO₂"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit" />
+            </LinearLayout>
+
+            <!-- Water -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_stat_water"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.0"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_cyan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="L water"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit" />
+            </LinearLayout>
+
+            <!-- Waste -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_stat_waste"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.0"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_amber" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="kg waste"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ═══ EQUIVALENCIES CARD ═══ -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_equivalencies"
+            style="@style/Widget.Eco.Card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_stats">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You've..."
+                    android:textAppearance="@style/TextAppearance.Eco.TitleMedium" />
+
+                <TextView
+                    android:id="@+id/tv_equiv_trees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="🌳 Planted 0.0 trees"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_green" />
+
+                <TextView
+                    android:id="@+id/tv_equiv_miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="🚗 0 miles not driven"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_cyan" />
+
+                <TextView
+                    android:id="@+id/tv_equiv_homes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="💡 Powered 0.0 homes for a day"
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/accent_amber" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═══ WEEKLY CHART ═══ -->
+        <TextView
+            android:id="@+id/tv_weekly_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="This Week"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_equivalencies" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart_weekly"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/chart_height"
+            android:layout_marginTop="@dimen/spacing_sm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_weekly_title" />
+
+        <!-- ═══ HEATMAP ═══ -->
+        <TextView
+            android:id="@+id/tv_heatmap_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Activity Heatmap"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chart_weekly" />
+
+        <com.ecotrack.app.view.dashboard.HeatmapCalendarView
+            android:id="@+id/heatmap_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_heatmap_title" />
+
+        <!-- ═══ RECENT LOGS ═══ -->
+        <TextView
+            android:id="@+id/tv_recent_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Recent Activity"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/heatmap_view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recent_logs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:layout_marginBottom="@dimen/spacing_xxl"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_recent_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

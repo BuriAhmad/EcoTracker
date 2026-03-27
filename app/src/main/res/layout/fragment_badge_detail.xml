@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/screen_padding_top"
+        android:paddingBottom="@dimen/screen_padding_bottom"
+        android:gravity="center_horizontal">
+
+        <!-- ── Back button ────────────────────────────────────────── -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/icon_large"
+            android:layout_height="@dimen/icon_large"
+            android:layout_gravity="start"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back_24"
+            android:contentDescription="Back"
+            app:tint="@color/text_secondary" />
+
+        <!-- ── Badge icon (large) ─────────────────────────────────── -->
+        <ImageView
+            android:id="@+id/ivBadgeIcon"
+            android:layout_width="@dimen/badge_icon_large"
+            android:layout_height="@dimen/badge_icon_large"
+            android:layout_marginTop="@dimen/spacing_xxl"
+            android:src="@drawable/ic_emoji_events_24"
+            android:contentDescription="Badge icon"
+            app:tint="@color/accent_amber" />
+
+        <!-- ── Badge name ─────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/tvBadgeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:textAppearance="@style/TextAppearance.Eco.HeadlineMedium"
+            android:textColor="@color/text_primary"
+            tools:text="First Log" />
+
+        <!-- ── Rarity chip ────────────────────────────────────────── -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipRarity"
+            style="@style/Widget.Material3.Chip.Assist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:textColor="@color/text_on_accent"
+            app:chipBackgroundColor="@color/accent_violet"
+            tools:text="Common" />
+
+        <!-- ── Description ────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Eco.Body"
+            android:textColor="@color/text_secondary"
+            tools:text="Log your first eco-friendly activity to earn this badge." />
+
+        <!-- ── Progress Card ──────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Progress"
+                    android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                    android:textColor="@color/text_primary" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/bg_progress_bar"
+                    android:indeterminate="false" />
+
+                <TextView
+                    android:id="@+id/tvProgressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                    android:textColor="@color/text_muted"
+                    tools:text="1 / 1 completed" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Earned date ────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/tvEarnedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:textAppearance="@style/TextAppearance.Eco.Body"
+            android:textColor="@color/accent_green"
+            android:visibility="gone"
+            tools:text="Earned on Jan 15, 2025" />
+
+        <!-- ── Not earned text ────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/tvNotEarned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Keep going — you haven't earned this badge yet!"
+            android:textAppearance="@style/TextAppearance.Eco.Body"
+            android:textColor="@color/text_muted"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

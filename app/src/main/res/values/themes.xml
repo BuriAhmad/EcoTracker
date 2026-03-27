@@ -1,0 +1,50 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.EcoTrack" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand color = green accent -->
+        <item name="colorPrimary">@color/accent_green</item>
+        <item name="colorOnPrimary">@color/text_on_accent</item>
+        <item name="colorPrimaryContainer">@color/accent_green_dark</item>
+        <item name="colorOnPrimaryContainer">@color/accent_green</item>
+
+        <!-- Secondary = cyan -->
+        <item name="colorSecondary">@color/accent_cyan</item>
+        <item name="colorOnSecondary">@color/text_on_accent</item>
+
+        <!-- Tertiary = amber -->
+        <item name="colorTertiary">@color/accent_amber</item>
+        <item name="colorOnTertiary">@color/text_on_accent</item>
+
+        <!-- Background & surface -->
+        <item name="android:colorBackground">@color/bg_deep</item>
+        <item name="colorSurface">@color/bg_surface</item>
+        <item name="colorSurfaceVariant">@color/bg_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/color_error</item>
+
+        <!-- Status bar and nav bar -->
+        <item name="android:statusBarColor">@color/bg_void</item>
+        <item name="android:navigationBarColor">@color/bg_surface</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Window -->
+        <item name="android:windowBackground">@color/bg_deep</item>
+
+        <!-- Default text -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+
+        <!-- Font -->
+        <item name="android:fontFamily">@font/font_jakarta</item>
+    </style>
+
+    <!-- Splash / Auth screen theme with void background -->
+    <style name="Theme.EcoTrack.Auth" parent="Theme.EcoTrack">
+        <item name="android:windowBackground">@color/bg_void</item>
+        <item name="android:statusBarColor">@color/bg_void</item>
+    </style>
+</resources>

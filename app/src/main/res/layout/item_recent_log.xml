@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/spacing_md">
+
+    <!-- Colored activity icon circle -->
+    <View
+        android:id="@+id/view_icon_bg"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_avatar_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_activity_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="Activity icon"
+        android:src="@drawable/ic_eco_24"
+        app:layout_constraintBottom_toBottomOf="@id/view_icon_bg"
+        app:layout_constraintEnd_toEndOf="@id/view_icon_bg"
+        app:layout_constraintStart_toStartOf="@id/view_icon_bg"
+        app:layout_constraintTop_toTopOf="@id/view_icon_bg"
+        app:tint="@color/accent_green" />
+
+    <!-- Activity title (e.g., "Biked 5.2 km") -->
+    <TextView
+        android:id="@+id/tv_activity_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Biked 5.2 km"
+        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+        app:layout_constraintEnd_toStartOf="@id/tv_points"
+        app:layout_constraintStart_toEndOf="@id/view_icon_bg"
+        app:layout_constraintTop_toTopOf="@id/view_icon_bg" />
+
+    <!-- Time ago -->
+    <TextView
+        android:id="@+id/tv_time_ago"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:text="2h ago"
+        android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+        android:textColor="@color/text_muted"
+        app:layout_constraintEnd_toStartOf="@id/tv_points"
+        app:layout_constraintStart_toEndOf="@id/view_icon_bg"
+        app:layout_constraintTop_toBottomOf="@id/tv_activity_title" />
+
+    <!-- Points earned -->
+    <TextView
+        android:id="@+id/tv_points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+52 pts"
+        android:textAppearance="@style/TextAppearance.Eco.BodyMedium"
+        android:textColor="@color/accent_amber"
+        app:layout_constraintBottom_toBottomOf="@id/view_icon_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/view_icon_bg" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

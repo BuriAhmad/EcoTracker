@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/screen_padding_top"
+        android:paddingBottom="@dimen/screen_padding_bottom">
+
+        <!-- ── Header with settings gear ──────────────────────────── -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+                android:textColor="@color/text_primary"
+                android:layout_gravity="start|center_vertical" />
+
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="@dimen/icon_large"
+                android:layout_height="@dimen/icon_large"
+                android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_settings_24"
+                android:contentDescription="Settings"
+                app:tint="@color/text_secondary" />
+        </FrameLayout>
+
+        <!-- ── Profile Hero ───────────────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="@dimen/avatar_large"
+                android:layout_height="@dimen/avatar_large"
+                android:background="@drawable/bg_avatar_circle"
+                android:src="@drawable/ic_person_24"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile photo" />
+
+            <TextView
+                android:id="@+id/tvDisplayName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:textAppearance="@style/TextAppearance.Eco.HeadlineMedium"
+                android:textColor="@color/text_primary"
+                tools:text="Alex Johnson" />
+
+            <TextView
+                android:id="@+id/tvDepartment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:textAppearance="@style/TextAppearance.Eco.Label"
+                android:textColor="@color/text_muted"
+                tools:text="Computer Science" />
+
+            <TextView
+                android:id="@+id/tvJoinedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xxs"
+                android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                android:textColor="@color/text_muted"
+                tools:text="Member since Jan 2025" />
+        </LinearLayout>
+
+        <!-- ── Stats Row (3 columns) ──────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:background="@drawable/bg_glass_card"
+            android:padding="@dimen/card_padding">
+
+            <!-- Points -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvStatPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_green"
+                    tools:text="1,250" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Points"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit"
+                    android:textColor="@color/text_muted" />
+            </LinearLayout>
+
+            <!-- Eco-Score -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvStatEcoScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_cyan"
+                    tools:text="72" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Eco-Score"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit"
+                    android:textColor="@color/text_muted" />
+            </LinearLayout>
+
+            <!-- Activities -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvStatActivities"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Eco.StatValue"
+                    android:textColor="@color/accent_amber"
+                    tools:text="42" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activities"
+                    android:textAppearance="@style/TextAppearance.Eco.StatUnit"
+                    android:textColor="@color/text_muted" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ── Streak Card ────────────────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:id="@+id/tvStreakIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔥"
+                    android:textSize="28sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvStreakCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:textAppearance="@style/TextAppearance.Eco.TitleLarge"
+                    android:textColor="@color/text_primary"
+                    app:layout_constraintStart_toEndOf="@id/tvStreakIcon"
+                    app:layout_constraintTop_toTopOf="@id/tvStreakIcon"
+                    app:layout_constraintBottom_toBottomOf="@id/tvStreakIcon"
+                    tools:text="7 Day Streak" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMultiplier"
+                    style="@style/Widget.Material3.Chip.Assist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_on_accent"
+                    app:chipBackgroundColor="@color/accent_amber"
+                    app:chipMinHeight="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1.5× multiplier" />
+
+                <!-- Progress bar towards next milestone -->
+                <ProgressBar
+                    android:id="@+id/progressStreak"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:max="100"
+                    android:progress="50"
+                    android:progressDrawable="@drawable/bg_progress_bar"
+                    android:indeterminate="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvStreakIcon" />
+
+                <TextView
+                    android:id="@+id/tvStreakMilestone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                    android:textColor="@color/text_muted"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/progressStreak"
+                    tools:text="Next milestone: 7 days" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Impact Breakdown Card ──────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Environmental Impact"
+                    android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                    android:textColor="@color/text_primary" />
+
+                <!-- CO2 row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_medium"
+                        android:layout_height="@dimen/icon_medium"
+                        android:src="@drawable/ic_cloud_24"
+                        android:contentDescription="CO2"
+                        app:tint="@color/accent_green" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:text="CO₂ Saved"
+                        android:textAppearance="@style/TextAppearance.Eco.Body"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvImpactCo2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                        android:textColor="@color/accent_green"
+                        tools:text="12.5 kg" />
+                </LinearLayout>
+
+                <!-- Water row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_medium"
+                        android:layout_height="@dimen/icon_medium"
+                        android:src="@drawable/ic_water_drop_24"
+                        android:contentDescription="Water"
+                        app:tint="@color/accent_cyan" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:text="Water Saved"
+                        android:textAppearance="@style/TextAppearance.Eco.Body"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvImpactWater"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                        android:textColor="@color/accent_cyan"
+                        tools:text="230 L" />
+                </LinearLayout>
+
+                <!-- Waste row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/icon_medium"
+                        android:layout_height="@dimen/icon_medium"
+                        android:src="@drawable/ic_recycling_24"
+                        android:contentDescription="Waste"
+                        app:tint="@color/accent_amber" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:text="Waste Diverted"
+                        android:textAppearance="@style/TextAppearance.Eco.Body"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvImpactWaste"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                        android:textColor="@color/accent_amber"
+                        tools:text="5.3 kg" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Badges Grid Section ────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Achievements"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/tvBadgeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxs"
+            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+            android:textColor="@color/text_muted"
+            tools:text="3 of 10 earned" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBadges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:nestedScrollingEnabled="false" />
+
+        <!-- ── Sign Out Button ────────────────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSignOut"
+            style="@style/Widget.Eco.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_xxl"
+            android:text="Sign Out" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
