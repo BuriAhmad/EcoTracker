@@ -56,6 +56,32 @@ public class LogActivityFragment extends Fragment {
         observeViewModel();
 
         viewModel.loadConversionFactors();
+
+        // Handle QR scanner pre-fill arguments
+        Bundle args = getArguments();
+        if (args != null && args.containsKey("activityType")) {
+            String qrType = args.getString("activityType");
+            int qrQuantity = args.getInt("quantity", 1);
+            String location = args.getString("locationName", "");
+
+            if (qrType != null && !qrType.isEmpty()) {
+                viewModel.selectActivity(qrType);
+                showQuantitySection(true);
+
+                if (qrQuantity > 0) {
+                    viewModel.incrementQuantity(qrQuantity);
+                }
+
+                if (location != null && !location.isEmpty()) {
+                    Snackbar.make(requireView(),
+                                    "\uD83D\uDCCD " + location,
+                                    Snackbar.LENGTH_LONG)
+                            .setBackgroundTint(getResources().getColor(R.color.bg_card, null))
+                            .setTextColor(getResources().getColor(R.color.accent_cyan, null))
+                            .show();
+                }
+            }
+        }
     }
 
     @Override

@@ -21,6 +21,9 @@ import com.ecotrack.app.util.ValidationUtils;
 import com.ecotrack.app.controller.FeedController;
 import com.ecotrack.app.controller.ChallengeController;
 
+// Phase 7 — team points integration
+import com.ecotrack.app.controller.TeamController;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,12 +44,14 @@ public class ActivityController {
     private final UserRepository userRepository;
     private final FeedController feedController;
     private final ChallengeController challengeController;
+    private final TeamController teamController;
 
     public ActivityController() {
         this.activityRepository = new ActivityRepository();
         this.userRepository = new UserRepository();
         this.feedController = new FeedController();
         this.challengeController = new ChallengeController();
+        this.teamController = new TeamController();
     }
 
     // ── Callback Interfaces ──────────────────────────────────────────────
@@ -156,6 +161,7 @@ public class ActivityController {
             feedController.postToFeed(userId, log);
             challengeController.updateProgressForActivity(
                     userId, log.getActivityType(), log.getQuantity());
+            teamController.updateTeamPointsForUser(userId, impact.getPointsEarned());
         } catch (Exception ignored) { }
     }
 

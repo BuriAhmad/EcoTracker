@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ecotrack.app.model.User;
@@ -49,6 +50,7 @@ public class LeaderboardFragment extends Fragment {
 
         setupRecyclerView();
         setupChips();
+        setupTeamsButton();
         observeViewModel();
     }
 
@@ -74,6 +76,12 @@ public class LeaderboardFragment extends Fragment {
         binding.chipWeek.setOnClickListener(v -> viewModel.setTimePeriod(Constants.PERIOD_THIS_WEEK));
         binding.chipMonth.setOnClickListener(v -> viewModel.setTimePeriod(Constants.PERIOD_THIS_MONTH));
         binding.chipAllTime.setOnClickListener(v -> viewModel.setTimePeriod(Constants.PERIOD_ALL_TIME));
+    }
+
+    private void setupTeamsButton() {
+        binding.btnViewTeams.setOnClickListener(v ->
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_board_to_teams));
     }
 
     private String getSelectedPeriod() {

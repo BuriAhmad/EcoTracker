@@ -82,6 +82,9 @@ public class ProfileFragment extends Fragment {
         binding.btnSettings.setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_profile_to_edit));
 
+        binding.btnAdminPanel.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_profile_to_admin));
+
         binding.btnSignOut.setOnClickListener(v -> {
             viewModel.logout();
             Navigation.findNavController(v).navigate(R.id.action_profile_to_login);
@@ -122,6 +125,13 @@ public class ProfileFragment extends Fragment {
 
     private void populateUser(User user) {
         if (user == null) return;
+
+        // Show admin panel button for admin users
+        if (Constants.ROLE_ADMIN.equals(user.getRole())) {
+            binding.btnAdminPanel.setVisibility(View.VISIBLE);
+        } else {
+            binding.btnAdminPanel.setVisibility(View.GONE);
+        }
 
         binding.tvDisplayName.setText(user.getDisplayName() != null ? user.getDisplayName() : "User");
         binding.tvDepartment.setText(user.getDepartment() != null ? user.getDepartment() : "");

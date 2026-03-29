@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.cardview)
     implementation(libs.swiperefreshlayout)
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     // Lifecycle & ViewModel
     implementation(libs.lifecycle.viewmodel)

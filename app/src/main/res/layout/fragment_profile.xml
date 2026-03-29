@@ -385,6 +385,22 @@
             android:layout_marginTop="@dimen/spacing_sm"
             android:nestedScrollingEnabled="false" />
 
+        <!-- ── Admin Panel Button (role-gated, hidden by default) ── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdminPanel"
+            style="@style/Widget.Eco.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Admin Panel"
+            android:textColor="@color/accent_cyan"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:icon="@drawable/ic_settings_24"
+            app:iconTint="@color/accent_cyan"
+            app:iconGravity="textStart"
+            app:strokeColor="@color/accent_cyan" />
+
         <!-- ── Sign Out Button ────────────────────────────────────── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignOut"

@@ -23,14 +23,32 @@
             android:paddingTop="@dimen/screen_padding_top"
             android:paddingBottom="@dimen/spacing_base">
 
-            <!-- ── Header ──────────────────────────────────────────── -->
-            <TextView
-                android:id="@+id/tvHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Leaderboard"
-                android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
-                android:textColor="@color/text_primary" />
+            <!-- ── Header with Teams button ────────────────────────── -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="Leaderboard"
+                    android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+                    android:textColor="@color/text_primary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnViewTeams"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="Teams"
+                    android:textColor="@color/accent_cyan"
+                    app:icon="@drawable/ic_group_24"
+                    app:iconTint="@color/accent_cyan"
+                    app:iconGravity="textStart" />
+            </FrameLayout>
 
             <!-- ── Time-period Chips ───────────────────────────────── -->
             <com.google.android.material.chip.ChipGroup
