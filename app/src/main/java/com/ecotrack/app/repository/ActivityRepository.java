@@ -13,12 +13,15 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Firestore CRUD for activityLogs, conversionFactors, and campusStats.
@@ -154,21 +157,25 @@ public class ActivityRepository {
                 .document();
         batch.set(logRef, log);
 
-        // 2. Increment user totals
+        // 2. Increment user totals (set-merge so it works even if fields don't exist yet)
         var userRef = db.collection(Constants.COLLECTION_USERS).document(userId);
-        batch.update(userRef, "totalPoints", FieldValue.increment(points));
-        batch.update(userRef, "totalCo2Saved", FieldValue.increment(co2));
-        batch.update(userRef, "totalWaterSaved", FieldValue.increment(water));
-        batch.update(userRef, "totalWasteDiverted", FieldValue.increment(waste));
-        batch.update(userRef, "totalActivitiesLogged", FieldValue.increment(1));
+        Map<String, Object> userInc = new HashMap<>();
+        userInc.put("totalPoints", FieldValue.increment(points));
+        userInc.put("totalCo2Saved", FieldValue.increment(co2));
+        userInc.put("totalWaterSaved", FieldValue.increment(water));
+        userInc.put("totalWasteDiverted", FieldValue.increment(waste));
+        userInc.put("totalActivitiesLogged", FieldValue.increment(1));
+        batch.set(userRef, userInc, SetOptions.merge());
 
-        // 3. Increment campus stats
+        // 3. Increment campus stats (set-merge creates the doc if it doesn't exist)
         var campusRef = db.collection(Constants.COLLECTION_CAMPUS_STATS)
                 .document(Constants.DOC_CAMPUS_AGGREGATE);
-        batch.update(campusRef, "totalCo2Saved", FieldValue.increment(co2));
-        batch.update(campusRef, "totalWaterSaved", FieldValue.increment(water));
-        batch.update(campusRef, "totalWasteDiverted", FieldValue.increment(waste));
-        batch.update(campusRef, "totalActivitiesLogged", FieldValue.increment(1));
+        Map<String, Object> campusInc = new HashMap<>();
+        campusInc.put("totalCo2Saved", FieldValue.increment(co2));
+        campusInc.put("totalWaterSaved", FieldValue.increment(water));
+        campusInc.put("totalWasteDiverted", FieldValue.increment(waste));
+        campusInc.put("totalActivitiesLogged", FieldValue.increment(1));
+        batch.set(campusRef, campusInc, SetOptions.merge());
 
         return batch.commit();
     }

@@ -56,6 +56,9 @@
         <action
             android:id="@+id/action_home_to_feed"
             app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_home_to_challenges"
+            app:destination="@id/challengesFragment" />
     </fragment>
 
     <!-- ==================== BOTTOM NAV: LOG ==================== -->

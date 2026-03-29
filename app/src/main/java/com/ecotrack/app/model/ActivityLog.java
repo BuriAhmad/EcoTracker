@@ -2,7 +2,6 @@ package com.ecotrack.app.model;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
-import com.google.firebase.firestore.ServerTimestamp;
 
 /**
  * Represents a single logged eco-friendly activity.
@@ -23,7 +22,6 @@ public class ActivityLog {
     private int pointsEarned;
     private String photoProofUrl;
     private boolean verified;
-    @ServerTimestamp
     private Timestamp timestamp;
 
     /** Required no-arg constructor for Firestore. */

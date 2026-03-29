@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_deep">
@@ -7,7 +9,308 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/screen_padding_horizontal">
+        android:padding="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/screen_padding_top"
+        android:paddingBottom="@dimen/spacing_xxxl">
+
+        <!-- ── Back button ────────────────────────────────────── -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_primary" />
+
+        <!-- ── Title ──────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:text="Create Challenge"
+            android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+            android:textColor="@color/text_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+        <!-- ── Challenge title input ──────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilChallengeTitle"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:hint="Challenge Title"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etChallengeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Description input ──────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDescription"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:hint="Description"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilChallengeTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Activity type selector ─────────────────────────── -->
+        <TextView
+            android:id="@+id/tvActivityTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Activity Type"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            android:textColor="@color/text_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilDescription" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupActivity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            app:singleSelection="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvActivityTypeLabel">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipBiking"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚲 Biking"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWalking"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚶 Walking"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipRecycling"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="♻️ Recycling"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWater"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💧 Water"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEnergy"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚡ Energy"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTransit"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚌 Transit"
+                android:textColor="@color/text_primary"
+                app:chipBackgroundColor="@color/bg_card" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- ── Goal quantity ───────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilGoal"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:hint="Goal Quantity (e.g. 50)"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toStartOf="@id/tilUnit"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupActivity">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etGoal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Unit ───────────────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilUnit"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:hint="Unit"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tilGoal"
+            app:layout_constraintTop_toBottomOf="@id/chipGroupActivity">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textColor="@color/text_primary"
+                tools:text="km" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Start date ─────────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilStartDate"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:hint="Start Date"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toStartOf="@id/tilEndDate"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilGoal">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etStartDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── End date ───────────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEndDate"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:hint="End Date"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tilStartDate"
+            app:layout_constraintTop_toBottomOf="@id/tilGoal">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEndDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Points reward ──────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPoints"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:hint="Points Reward"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent_green"
+            app:hintTextColor="@color/text_muted"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilStartDate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPoints"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Publish button ─────────────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPublish"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="@dimen/spacing_xxl"
+            android:text="Publish Challenge"
+            android:textColor="@color/text_on_accent"
+            app:backgroundTint="@color/accent_green"
+            app:cornerRadius="@dimen/radius_md"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilPoints" />
+
+        <!-- ── Loading ────────────────────────────────────────── -->
+        <ProgressBar
+            android:id="@+id/progressLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

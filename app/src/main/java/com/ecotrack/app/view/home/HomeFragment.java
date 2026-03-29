@@ -117,6 +117,16 @@ public class HomeFragment extends Fragment {
         binding.tvViewAll.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_home_to_dashboard));
+
+        // Campus Feed card → feed
+        binding.cardFeed.setOnClickListener(v ->
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_home_to_feed));
+
+        // Challenges card → challenges
+        binding.cardChallenges.setOnClickListener(v ->
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_home_to_challenges));
     }
 
     // ── ViewModel Observers ──────────────────────────────────────────────

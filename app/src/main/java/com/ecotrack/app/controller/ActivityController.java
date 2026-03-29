@@ -17,6 +17,10 @@ import com.ecotrack.app.util.ImpactCalculator;
 import com.ecotrack.app.util.StreakManager;
 import com.ecotrack.app.util.ValidationUtils;
 
+// Phase 6 — social feed + challenge progress integration
+import com.ecotrack.app.controller.FeedController;
+import com.ecotrack.app.controller.ChallengeController;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,10 +39,14 @@ public class ActivityController {
 
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
+    private final FeedController feedController;
+    private final ChallengeController challengeController;
 
     public ActivityController() {
         this.activityRepository = new ActivityRepository();
         this.userRepository = new UserRepository();
+        this.feedController = new FeedController();
+        this.challengeController = new ChallengeController();
     }
 
     // ── Callback Interfaces ──────────────────────────────────────────────
@@ -125,22 +133,30 @@ public class ActivityController {
         log.setWasteDiverted(impact.getWasteDiverted());
         log.setPointsEarned(impact.getPointsEarned());
         log.setVerified(photoUri == null); // If no photo, auto-verified
+        log.setTimestamp(Timestamp.now()); // Explicit timestamp — avoids @ServerTimestamp pending issues in batch
 
-        // Execute batch write: save log + increment user totals + increment campus stats
+        // Execute batch write: save log + increment user totals + increment campus stats.
+        // Firestore writes to local cache instantly; the Task only resolves when the
+        // server acknowledges. On unreliable networks the server round-trip may never
+        // complete, so we tell the UI "done" immediately — the data is safely in the
+        // local cache and will sync to the server when connectivity is restored.
         activityRepository.executeLogBatch(
                 userId, log,
                 impact.getCo2Saved(), impact.getWaterSaved(),
                 impact.getWasteDiverted(), impact.getPointsEarned()
-        ).addOnSuccessListener(aVoid -> {
-            // Return success to UI immediately
-            callback.onSuccess(log);
-            // Then evaluate streak + badges fire-and-forget
-            try {
-                evaluateAndUpdateStreak(userId, log);
-                evaluateBadges(userId);
-            } catch (Exception ignored) { }
-        }).addOnFailureListener(e ->
-                 callback.onError("Failed to save activity: " + e.getMessage()));
+        );
+
+        // ── Immediately return success to UI (data is in local cache) ────
+        callback.onSuccess(log);
+
+        // ── Fire-and-forget: streak, badges, feed post, challenge progress ─
+        try {
+            evaluateAndUpdateStreak(userId, log);
+            evaluateBadges(userId);
+            feedController.postToFeed(userId, log);
+            challengeController.updateProgressForActivity(
+                    userId, log.getActivityType(), log.getQuantity());
+        } catch (Exception ignored) { }
     }
 
     // ── Conversion Factors ───────────────────────────────────────────────
