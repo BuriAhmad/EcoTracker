@@ -1,13 +1,318 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_deep">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/screen_padding_horizontal">
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/screen_padding_top"
+        android:paddingBottom="@dimen/screen_padding_bottom">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- ── Header ─────────────────────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/icon_large"
+                android:layout_height="@dimen/icon_large"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back_24"
+                android:contentDescription="Back"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_sm"
+                android:text="Notifications"
+                android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- ── Daily Reminder Toggle ───────────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- Daily Reminder Switch -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Daily Reminder"
+                            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Get a nudge to log your eco activities"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchDailyReminder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Reminder Time Stepper -->
+                <LinearLayout
+                    android:id="@+id/layoutReminderTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Reminder time"
+                        android:textAppearance="@style/TextAppearance.Eco.Body"
+                        android:textColor="@color/text_secondary" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTimeMinus"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        app:icon="@drawable/ic_remove_24"
+                        app:iconTint="@color/text_primary"
+                        app:iconSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/tvReminderTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/spacing_md"
+                        android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+                        android:textColor="@color/accent_green"
+                        tools:text="8:00 AM" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTimePlus"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        app:icon="@drawable/ic_add_24"
+                        app:iconTint="@color/text_primary"
+                        app:iconSize="18dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Other Notification Toggles ──────────────────────────── -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- Challenge Updates -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Challenge Updates"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New challenges and progress milestones"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchChallengeUpdates"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_md"
+                    android:background="@color/divider" />
+
+                <!-- Streak Alerts -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Streak Alerts"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reminders to keep your streak alive"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchStreakAlerts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_md"
+                    android:background="@color/divider" />
+
+                <!-- Campus Milestones -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Campus Milestones"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="When our campus hits big sustainability goals"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchCampusMilestones"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_md"
+                    android:background="@color/divider" />
+
+                <!-- Badge Unlocks -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Badge Unlocks"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Celebrate when you earn new achievements"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchBadgeUnlocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Save Button ─────────────────────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            style="@style/Widget.Eco.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Save Settings" />
+
+    </LinearLayout>
 </ScrollView>

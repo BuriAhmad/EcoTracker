@@ -27,6 +27,8 @@ import com.ecotrack.app.controller.TeamController;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -154,8 +156,13 @@ public class ActivityController {
         // ── Immediately return success to UI (data is in local cache) ────
         callback.onSuccess(log);
 
-        // ── Fire-and-forget: streak, badges, feed post, challenge progress ─
+        // ── Fire-and-forget: photo upload, streak, badges, feed post, challenge progress ─
         try {
+            // Upload photo proof if provided
+            if (photoUri != null) {
+                uploadProofPhoto(userId, log, photoUri);
+            }
+
             evaluateAndUpdateStreak(userId, log);
             evaluateBadges(userId);
             feedController.postToFeed(userId, log);
@@ -163,6 +170,43 @@ public class ActivityController {
                     userId, log.getActivityType(), log.getQuantity());
             teamController.updateTeamPointsForUser(userId, impact.getPointsEarned());
         } catch (Exception ignored) { }
+    }
+
+    // ── Photo Proof Upload ─────────────────────────────────────────────
+
+    /**
+     * Upload proof photo to Firebase Storage and update the activity log document
+     * with the download URL.  Runs fire-and-forget; UI has already been notified.
+     */
+    private void uploadProofPhoto(String userId, ActivityLog log, Uri photoUri) {
+        String logId = log.getTimestamp() != null
+                ? String.valueOf(log.getTimestamp().toDate().getTime())
+                : String.valueOf(System.currentTimeMillis());
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference()
+                .child(Constants.STORAGE_PROOFS)
+                .child(userId)
+                .child(logId + ".jpg");
+
+        ref.putFile(photoUri)
+                .addOnSuccessListener(taskSnapshot ->
+                        ref.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                            // Update the log document with the photo URL
+                            Map<String, Object> update = new HashMap<>();
+                            update.put("photoUrl", downloadUri.toString());
+                            update.put("verified", false); // pending review
+                            FirebaseFirestore.getInstance()
+                                    .collection(Constants.COLLECTION_ACTIVITY_LOGS)
+                                    .whereEqualTo("userId", userId)
+                                    .whereEqualTo("timestamp", log.getTimestamp())
+                                    .limit(1)
+                                    .get()
+                                    .addOnSuccessListener(snap -> {
+                                        if (!snap.isEmpty()) {
+                                            snap.getDocuments().get(0).getReference().update(update);
+                                        }
+                                    });
+                        }));
     }
 
     // ── Conversion Factors ───────────────────────────────────────────────

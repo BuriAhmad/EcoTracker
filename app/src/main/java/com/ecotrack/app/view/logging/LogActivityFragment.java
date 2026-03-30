@@ -1,10 +1,13 @@
 package com.ecotrack.app.view.logging;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,6 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.transition.TransitionManager;
 
+import com.bumptech.glide.Glide;
 import com.example.saturn.R;
 import com.example.saturn.databinding.FragmentLogActivityBinding;
 import com.ecotrack.app.util.ImpactCalculator;
@@ -34,6 +38,12 @@ public class LogActivityFragment extends Fragment {
     private ActivityViewModel viewModel;
     private ActivityCategoryAdapter adapter;
 
+    /* Gallery photo picker */
+    private final ActivityResultLauncher<String> photoPicker =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri != null) handlePhotoSelected(uri);
+            });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,6 +63,7 @@ public class LogActivityFragment extends Fragment {
         setupStepperButtons();
         setupSubmitButton();
         setupQrButton();
+        setupPhotoPicker();
         observeViewModel();
 
         viewModel.loadConversionFactors();
@@ -143,6 +154,29 @@ public class LogActivityFragment extends Fragment {
         binding.btnQrScan.setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_log_to_qr));
+    }
+
+    private void setupPhotoPicker() {
+        // Tap placeholder OR preview to open gallery
+        binding.layoutPhotoPlaceholder.setOnClickListener(v -> photoPicker.launch("image/*"));
+        binding.ivPhotoPreview.setOnClickListener(v -> photoPicker.launch("image/*"));
+
+        binding.btnRemovePhoto.setOnClickListener(v -> {
+            viewModel.setPhotoUri(null);
+            binding.ivPhotoPreview.setVisibility(View.GONE);
+            binding.layoutPhotoPlaceholder.setVisibility(View.VISIBLE);
+            binding.btnRemovePhoto.setVisibility(View.GONE);
+        });
+    }
+
+    private void handlePhotoSelected(Uri uri) {
+        viewModel.setPhotoUri(uri);
+
+        // Show preview
+        Glide.with(this).load(uri).centerCrop().into(binding.ivPhotoPreview);
+        binding.ivPhotoPreview.setVisibility(View.VISIBLE);
+        binding.layoutPhotoPlaceholder.setVisibility(View.GONE);
+        binding.btnRemovePhoto.setVisibility(View.VISIBLE);
     }
 
     // ── Observe ViewModel ────────────────────────────────────────────────
@@ -236,6 +270,7 @@ public class LogActivityFragment extends Fragment {
                 (ViewGroup) binding.getRoot().findViewById(R.id.layout_quantity).getParent());
         binding.layoutQuantity.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.cardImpactPreview.setVisibility(show ? View.VISIBLE : View.GONE);
+        binding.cardPhotoProof.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.btnSubmit.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.btnSubmit.setEnabled(true);
         binding.tvDailyCount.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -251,6 +286,10 @@ public class LogActivityFragment extends Fragment {
         viewModel.resetForm();
         adapter.clearSelection();
         showQuantitySection(false);
+        // Reset photo UI
+        binding.ivPhotoPreview.setVisibility(View.GONE);
+        binding.layoutPhotoPlaceholder.setVisibility(View.VISIBLE);
+        binding.btnRemovePhoto.setVisibility(View.GONE);
     }
 
     @Override

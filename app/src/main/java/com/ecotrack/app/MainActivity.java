@@ -11,9 +11,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.saturn.R;
 import com.example.saturn.databinding.ActivityMainBinding;
+import com.ecotrack.app.model.NotificationPreferences;
 import com.ecotrack.app.util.FirestoreSeeder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -83,6 +85,31 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null && navController != null) {
             // User is signed in — navigate to home, clearing login from back stack
             navController.navigate(R.id.action_login_to_home);
+
+            // Subscribe to FCM topics based on notification preferences
+            subscribeFcmTopics();
+        }
+    }
+
+    /**
+     * Subscribe / unsubscribe from FCM topics based on local notification prefs.
+     */
+    private void subscribeFcmTopics() {
+        NotificationPreferences prefs = NotificationPreferences.load(this);
+        FirebaseMessaging fm = FirebaseMessaging.getInstance();
+
+        toggleTopic(fm, "challenge_updates", prefs.isChallengeUpdates());
+        toggleTopic(fm, "streak_alerts",     prefs.isStreakAlerts());
+        toggleTopic(fm, "campus_milestones", prefs.isCampusMilestones());
+        toggleTopic(fm, "badge_unlocks",     prefs.isBadgeUnlocks());
+        toggleTopic(fm, "daily_reminders",   prefs.isDailyReminderEnabled());
+    }
+
+    private void toggleTopic(FirebaseMessaging fm, String topic, boolean subscribe) {
+        if (subscribe) {
+            fm.subscribeToTopic(topic);
+        } else {
+            fm.unsubscribeFromTopic(topic);
         }
     }
 

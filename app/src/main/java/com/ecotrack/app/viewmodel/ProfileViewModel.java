@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.ecotrack.app.model.Badge;
 import com.ecotrack.app.model.BadgeDefinition;
 import com.ecotrack.app.model.User;
+import com.ecotrack.app.controller.UserController;
 import com.ecotrack.app.repository.UserRepository;
 import com.ecotrack.app.util.Constants;
 import com.ecotrack.app.util.EcoScoreCalculator;
@@ -26,6 +27,7 @@ public class ProfileViewModel extends ViewModel {
 
     private final FirebaseFirestore db;
     private final UserRepository userRepository;
+    private final UserController userController;
 
     private final MutableLiveData<User> user = new MutableLiveData<>();
     private final MutableLiveData<List<BadgeDefinition>> badgeDefinitions = new MutableLiveData<>();
@@ -33,10 +35,15 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<Integer> ecoScore = new MutableLiveData<>(0);
     private final MutableLiveData<String> ecoLevel = new MutableLiveData<>("Eco Newcomer");
     private final MutableLiveData<Double> streakMultiplier = new MutableLiveData<>(1.0);
+    private final MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isUpdating = new MutableLiveData<>(false);
 
     public ProfileViewModel() {
         db = FirebaseFirestore.getInstance();
         userRepository = new UserRepository();
+        userController = new UserController();
     }
 
     // ── Exposed LiveData ─────────────────────────────────────────────────
@@ -47,6 +54,10 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<Integer> getEcoScore() { return ecoScore; }
     public LiveData<String> getEcoLevel() { return ecoLevel; }
     public LiveData<Double> getStreakMultiplier() { return streakMultiplier; }
+    public LiveData<Boolean> getUpdateSuccess() { return updateSuccess; }
+    public LiveData<Boolean> getDeleteSuccess() { return deleteSuccess; }
+    public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<Boolean> getIsUpdating() { return isUpdating; }
 
     // ── Load ─────────────────────────────────────────────────────────────
 
@@ -110,6 +121,63 @@ public class ProfileViewModel extends ViewModel {
 
     public void logout() {
         userRepository.signOut();
+    }
+
+    // ── Profile Edit ─────────────────────────────────────────────────────
+
+    public void updateProfile(String displayName, String department,
+                              boolean anonymousOnFeed, boolean showOnLeaderboard) {
+        isUpdating.setValue(true);
+        userController.updateProfile(displayName, department, anonymousOnFeed, showOnLeaderboard,
+                new UserController.SimpleCallback() {
+                    @Override
+                    public void onSuccess() {
+                        isUpdating.setValue(false);
+                        updateSuccess.setValue(true);
+                        loadUserData();  // Refresh profile data
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        isUpdating.setValue(false);
+                        errorMessage.setValue(message);
+                    }
+                });
+    }
+
+    public void uploadAvatar(byte[] imageBytes) {
+        isUpdating.setValue(true);
+        userController.uploadAvatar(imageBytes, new UserController.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                isUpdating.setValue(false);
+                updateSuccess.setValue(true);
+                loadUserData();
+            }
+
+            @Override
+            public void onError(String message) {
+                isUpdating.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
+    }
+
+    public void deleteAccount() {
+        isUpdating.setValue(true);
+        userController.deleteAccount(new UserController.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                isUpdating.setValue(false);
+                deleteSuccess.setValue(true);
+            }
+
+            @Override
+            public void onError(String message) {
+                isUpdating.setValue(false);
+                errorMessage.setValue(message);
+            }
+        });
     }
 
     private String getCurrentUserId() {

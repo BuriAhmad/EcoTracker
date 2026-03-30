@@ -8,6 +8,11 @@ import com.ecotrack.app.util.ValidationUtils;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Orchestrates auth flows: register, login, logout, profile CRUD.
@@ -184,5 +189,104 @@ public class UserController {
      */
     public boolean isLoggedIn() {
         return userRepository.isLoggedIn();
+    }
+
+    // ── Simple callback for non-auth operations ──────────────────────────
+
+    /**
+     * Generic success / error callback for profile and account operations.
+     */
+    public interface SimpleCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
+    // ── Profile Update ───────────────────────────────────────────────────
+
+    /**
+     * Update user profile fields in Firestore.
+     */
+    public void updateProfile(String displayName, String department,
+                              boolean anonymousOnFeed, boolean showOnLeaderboard,
+                              SimpleCallback callback) {
+        if (displayName == null || displayName.trim().isEmpty()) {
+            callback.onError("Display name cannot be empty");
+            return;
+        }
+
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            callback.onError("Not signed in");
+            return;
+        }
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("displayName", displayName.trim());
+        updates.put("department", department);
+        updates.put("anonymousOnFeed", anonymousOnFeed);
+        updates.put("showOnLeaderboard", showOnLeaderboard);
+
+        userRepository.updateUserFields(userId, updates)
+                .addOnSuccessListener(aVoid -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onError("Update failed: " + e.getMessage()));
+    }
+
+    // ── Avatar Upload ────────────────────────────────────────────────────
+
+    /**
+     * Upload compressed avatar bytes to Firebase Storage, then update the user doc.
+     */
+    public void uploadAvatar(byte[] imageBytes, SimpleCallback callback) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            callback.onError("Not signed in");
+            return;
+        }
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference()
+                .child(Constants.STORAGE_AVATARS)
+                .child(userId + ".jpg");
+
+        ref.putBytes(imageBytes)
+                .addOnSuccessListener(task -> ref.getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            Map<String, Object> update = new HashMap<>();
+                            update.put("avatarUrl", uri.toString());
+                            userRepository.updateUserFields(userId, update);
+                            callback.onSuccess();
+                        })
+                        .addOnFailureListener(e -> callback.onError("Upload ok but URL failed")))
+                .addOnFailureListener(e -> callback.onError("Avatar upload failed: " + e.getMessage()));
+    }
+
+    // ── Account Deletion ─────────────────────────────────────────────────
+
+    /**
+     * Delete user: Firestore doc → decrement campus count → delete auth account.
+     */
+    public void deleteAccount(SimpleCallback callback) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            callback.onError("Not signed in");
+            return;
+        }
+
+        // 1. Delete Firestore document
+        userRepository.deleteUserDocument(userId)
+                .addOnSuccessListener(aVoid -> {
+                    // 2. Decrement campus totalUsers
+                    FirebaseFirestore.getInstance()
+                            .collection(Constants.COLLECTION_CAMPUS_STATS)
+                            .document(Constants.DOC_CAMPUS_AGGREGATE)
+                            .update("totalUsers", FieldValue.increment(-1));
+
+                    // 3. Delete Firebase Auth account
+                    userRepository.deleteAuthAccount()
+                            .addOnSuccessListener(aVoid2 -> callback.onSuccess())
+                            .addOnFailureListener(e ->
+                                    callback.onError("Profile deleted but auth removal failed"));
+                })
+                .addOnFailureListener(e ->
+                        callback.onError("Couldn't delete account: " + e.getMessage()));
     }
 }

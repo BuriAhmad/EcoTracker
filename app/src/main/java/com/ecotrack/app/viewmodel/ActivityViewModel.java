@@ -1,5 +1,8 @@
 package com.ecotrack.app.viewmodel;
 
+import android.net.Uri;
+
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -26,6 +29,7 @@ public class ActivityViewModel extends ViewModel {
     private final MutableLiveData<Integer> todayLogCount = new MutableLiveData<>(0);
     private final MutableLiveData<List<ConversionFactor>> conversionFactors = new MutableLiveData<>();
     private final MutableLiveData<String> selectedUnit = new MutableLiveData<>("");
+    private final MutableLiveData<Uri> photoUri = new MutableLiveData<>();
 
     // Cache factors locally so impact preview doesn't need network each time
     private List<ConversionFactor> cachedFactors;
@@ -43,6 +47,9 @@ public class ActivityViewModel extends ViewModel {
     public LiveData<Integer> getTodayLogCount() { return todayLogCount; }
     public LiveData<List<ConversionFactor>> getConversionFactors() { return conversionFactors; }
     public LiveData<String> getSelectedUnit() { return selectedUnit; }
+    public LiveData<Uri> getPhotoUri() { return photoUri; }
+
+    public void setPhotoUri(@Nullable Uri uri) { photoUri.setValue(uri); }
 
     // ── Actions ──────────────────────────────────────────────────────────
 
@@ -123,7 +130,7 @@ public class ActivityViewModel extends ViewModel {
 
         logResult.setValue(ViewState.loading());
 
-        controller.logActivity(type, qty, null, new ActivityController.LogCallback() {
+        controller.logActivity(type, qty, photoUri.getValue(), new ActivityController.LogCallback() {
             @Override
             public void onSuccess(ActivityLog log) {
                 logResult.setValue(ViewState.success(log));
@@ -163,6 +170,7 @@ public class ActivityViewModel extends ViewModel {
         impactPreview.setValue(null);
         logResult.setValue(null);
         selectedUnit.setValue("");
+        photoUri.setValue(null);
     }
 
     // ── Private Helpers ──────────────────────────────────────────────────

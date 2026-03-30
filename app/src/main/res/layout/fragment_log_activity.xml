@@ -211,6 +211,83 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ═══ PHOTO PROOF (optional) ═══ -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_photo_proof"
+            style="@style/Widget.Eco.Card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_impact_preview">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Photo Proof (optional)"
+                    android:textAppearance="@style/TextAppearance.Eco.TitleMedium" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md">
+
+                    <!-- Placeholder shown before photo is selected -->
+                    <LinearLayout
+                        android:id="@+id/layout_photo_placeholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:background="@drawable/bg_input_field"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/icon_large"
+                            android:layout_height="@dimen/icon_large"
+                            android:src="@drawable/ic_camera_alt_24"
+                            app:tint="@color/text_muted"
+                            android:contentDescription="Add photo" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:text="Tap to add photo"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <!-- Preview shown after photo is selected -->
+                    <ImageView
+                        android:id="@+id/iv_photo_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:contentDescription="Photo preview" />
+                </FrameLayout>
+
+                <!-- Remove photo button, visible only after selection -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_remove_photo"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="Remove"
+                    android:textColor="@color/color_error"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- ═══ SUBMIT BUTTON ═══ -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_submit"
@@ -223,7 +300,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_impact_preview" />
+            app:layout_constraintTop_toBottomOf="@id/card_photo_proof" />
 
         <!-- Loading -->
         <ProgressBar

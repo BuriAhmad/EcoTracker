@@ -1,13 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_deep">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/screen_padding_horizontal">
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/screen_padding_horizontal"
+        android:paddingTop="@dimen/screen_padding_top"
+        android:paddingBottom="@dimen/screen_padding_bottom">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- ── Header ─────────────────────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/icon_large"
+                android:layout_height="@dimen/icon_large"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_back_24"
+                android:contentDescription="Back"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_sm"
+                android:text="Edit Profile"
+                android:textAppearance="@style/TextAppearance.Eco.HeadlineLarge"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- ── Avatar with edit overlay ────────────────────────────── -->
+        <FrameLayout
+            android:id="@+id/avatarContainer"
+            android:layout_width="@dimen/avatar_large"
+            android:layout_height="@dimen/avatar_large"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_avatar_circle"
+                android:src="@drawable/ic_person_24"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile photo" />
+
+            <ImageView
+                android:layout_width="@dimen/icon_medium"
+                android:layout_height="@dimen/icon_medium"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_avatar_circle"
+                android:padding="4dp"
+                android:src="@drawable/ic_camera_alt_24"
+                android:contentDescription="Change photo"
+                app:tint="@color/text_primary" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="Tap to change photo"
+            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+            android:textColor="@color/text_muted" />
+
+        <!-- ── Display Name ───────────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDisplayName"
+            style="@style/Widget.Eco.TextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:hint="Display Name"
+            app:startIconDrawable="@drawable/ic_person_24"
+            app:startIconTint="@color/text_muted">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDisplayName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:textColor="@color/text_primary"
+                android:maxLength="50" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Department ─────────────────────────────────────────── -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDepartment"
+            style="@style/Widget.Eco.TextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:hint="Department"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvDepartment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ── Privacy Section ─────────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxl"
+            android:text="Privacy"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            android:textColor="@color/text_primary" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <!-- Anonymous on Feed -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Anonymous contributions"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hide your name on the social feed"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchAnonymous"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_md"
+                    android:background="@color/divider" />
+
+                <!-- Show on Leaderboard -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Show on leaderboard"
+                            android:textAppearance="@style/TextAppearance.Eco.Body"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Appear in campus rankings"
+                            android:textAppearance="@style/TextAppearance.Eco.LabelSmall"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchLeaderboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Save Button ─────────────────────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            style="@style/Widget.Eco.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Save Changes" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:visibility="gone"
+            android:indeterminateTint="@color/accent_green" />
+
+        <!-- ── Notification Settings Link ──────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNotifications"
+            style="@style/Widget.Eco.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/spacing_base"
+            android:text="Notification Settings"
+            app:icon="@drawable/ic_notifications_24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/accent_green" />
+
+        <!-- ── Danger Zone ─────────────────────────────────────────── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xxl"
+            android:text="Danger Zone"
+            android:textAppearance="@style/TextAppearance.Eco.TitleMedium"
+            android:textColor="@color/color_error" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Eco.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            app:strokeColor="@color/color_error">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Permanently delete your account and all associated data. This action cannot be undone."
+                    android:textAppearance="@style/TextAppearance.Eco.Body"
+                    android:textColor="@color/text_muted" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDeleteAccount"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="Delete Account"
+                    android:textColor="@color/color_error"
+                    app:icon="@drawable/ic_delete_24"
+                    app:iconTint="@color/color_error"
+                    app:iconGravity="textStart"
+                    app:strokeColor="@color/color_error"
+                    app:cornerRadius="@dimen/button_radius" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
 </ScrollView>
