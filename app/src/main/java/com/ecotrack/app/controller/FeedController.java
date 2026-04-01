@@ -134,6 +134,15 @@ public class FeedController {
                 .addOnFailureListener(e -> callback.onError("Couldn't react: " + e.getMessage()));
     }
 
+    /**
+     * Atomically decrement a reaction on a feed item (un-react).
+     */
+    public void removeReaction(String feedItemId, String emoji, DataCallback<Void> callback) {
+        feedRepository.decrementReaction(feedItemId, emoji)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onError("Couldn't remove reaction: " + e.getMessage()));
+    }
+
     // ── Today's Count (for banner) ───────────────────────────────────────
 
     public void getTodayFeedCount(DataCallback<Integer> callback) {

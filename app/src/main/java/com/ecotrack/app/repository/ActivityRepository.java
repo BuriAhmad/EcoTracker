@@ -165,6 +165,10 @@ public class ActivityRepository {
         userInc.put("totalWaterSaved", FieldValue.increment(water));
         userInc.put("totalWasteDiverted", FieldValue.increment(waste));
         userInc.put("totalActivitiesLogged", FieldValue.increment(1));
+        // Track per-type km for badge evaluation
+        if (Constants.ACTIVITY_BIKING.equals(log.getActivityType())) {
+            userInc.put("totalBikeKm", FieldValue.increment(log.getQuantity()));
+        }
         batch.set(userRef, userInc, SetOptions.merge());
 
         // 3. Increment campus stats (set-merge creates the doc if it doesn't exist)

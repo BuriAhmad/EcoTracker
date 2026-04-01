@@ -67,6 +67,15 @@ public class FeedRepository {
     }
 
     /**
+     * Atomically decrement a reaction count on a feed item (min 0).
+     */
+    public Task<Void> decrementReaction(String feedItemId, String emoji) {
+        return db.collection(Constants.COLLECTION_SOCIAL_FEED)
+                .document(feedItemId)
+                .update("reactions." + emoji, FieldValue.increment(-1));
+    }
+
+    /**
      * Get the number of feed items posted today (for the live banner).
      */
     public Task<Integer> getTodayFeedCount() {

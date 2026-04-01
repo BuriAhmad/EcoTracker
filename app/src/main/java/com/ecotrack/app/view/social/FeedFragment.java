@@ -17,7 +17,11 @@ import com.ecotrack.app.viewmodel.FeedViewModel;
 import com.example.saturn.R;
 import com.example.saturn.databinding.FragmentFeedBinding;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Social feed — campus-wide activity feed with reactions and infinite scroll.
@@ -106,11 +110,18 @@ public class FeedFragment extends Fragment implements FeedItemAdapter.ReactionLi
             binding.tvLiveBanner.setText(
                     String.format(Locale.US, "🌿 %d activities logged today", count));
         });
+
+        viewModel.getUserReactions().observe(getViewLifecycleOwner(), reactions -> {
+            // Cast is safe: HashSet<String> is a Set<String>
+            @SuppressWarnings("unchecked")
+            Map<String, Set<String>> castReactions = (Map<String, Set<String>>) (Map<?, ?>) reactions;
+            adapter.setUserReactions(castReactions);
+        });
     }
 
     @Override
     public void onReaction(String feedItemId, String emoji) {
-        viewModel.addReaction(feedItemId, emoji);
+        viewModel.toggleReaction(feedItemId, emoji);
     }
 
     @Override

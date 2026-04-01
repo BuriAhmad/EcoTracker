@@ -132,12 +132,20 @@ public class ChallengeRepository {
             double current = snap.getDouble("currentProgress") != null
                     ? snap.getDouble("currentProgress") : 0;
             double updated = current + delta;
-            boolean completed = updated >= goalQuantity;
+            boolean wasCompleted = Boolean.TRUE.equals(snap.getBoolean("completed"));
+            boolean nowCompleted = updated >= goalQuantity;
 
             Map<String, Object> updates = new HashMap<>();
             updates.put("currentProgress", updated);
-            updates.put("completed", completed);
+            updates.put("completed", nowCompleted);
             transaction.update(ref, updates);
+
+            // Increment the user's completed-challenges counter the first time they finish
+            if (nowCompleted && !wasCompleted) {
+                DocumentReference userRef = db.collection(Constants.COLLECTION_USERS)
+                        .document(userId);
+                transaction.update(userRef, "totalChallengesCompleted", FieldValue.increment(1));
+            }
             return null;
         });
     }

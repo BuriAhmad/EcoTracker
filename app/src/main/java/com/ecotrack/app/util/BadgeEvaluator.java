@@ -68,11 +68,10 @@ public final class BadgeEvaluator {
                 return user.getTotalWasteDiverted();
             case "totalPoints":
                 return user.getTotalPoints();
-            // Metrics that need per-type tracking (not yet in User model)
-            // Fallback to 0 — will work once more fields are added
             case "totalBikeKm":
+                return user.getTotalBikeKm();
             case "challengesCompleted":
-                return 0;
+                return user.getTotalChallengesCompleted();
             default:
                 return 0;
         }

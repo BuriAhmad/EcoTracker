@@ -23,6 +23,8 @@ public class User {
     private double totalWaterSaved;
     private double totalWasteDiverted;
     private long totalActivitiesLogged;
+    private double totalBikeKm;            // Cumulative km cycled (for bike_100km badge)
+    private long totalChallengesCompleted; // Completed challenges (for challenges_5 badge)
     private int currentStreak;
     private Timestamp lastLogDate;
     @ServerTimestamp
@@ -69,6 +71,8 @@ public class User {
     public double getTotalWaterSaved() { return totalWaterSaved; }
     public double getTotalWasteDiverted() { return totalWasteDiverted; }
     public long getTotalActivitiesLogged() { return totalActivitiesLogged; }
+    public double getTotalBikeKm() { return totalBikeKm; }
+    public long getTotalChallengesCompleted() { return totalChallengesCompleted; }
     public int getCurrentStreak() { return currentStreak; }
     public Timestamp getLastLogDate() { return lastLogDate; }
     public Timestamp getCreatedAt() { return createdAt; }
@@ -89,6 +93,8 @@ public class User {
     public void setTotalWaterSaved(double totalWaterSaved) { this.totalWaterSaved = totalWaterSaved; }
     public void setTotalWasteDiverted(double totalWasteDiverted) { this.totalWasteDiverted = totalWasteDiverted; }
     public void setTotalActivitiesLogged(long totalActivitiesLogged) { this.totalActivitiesLogged = totalActivitiesLogged; }
+    public void setTotalBikeKm(double totalBikeKm) { this.totalBikeKm = totalBikeKm; }
+    public void setTotalChallengesCompleted(long totalChallengesCompleted) { this.totalChallengesCompleted = totalChallengesCompleted; }
     public void setCurrentStreak(int currentStreak) { this.currentStreak = currentStreak; }
     public void setLastLogDate(Timestamp lastLogDate) { this.lastLogDate = lastLogDate; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

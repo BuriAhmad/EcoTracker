@@ -14,9 +14,11 @@ import com.example.saturn.R;
 import com.example.saturn.databinding.ItemFeedActivityBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Adapter for the social feed RecyclerView.
@@ -25,6 +27,13 @@ public class FeedItemAdapter extends RecyclerView.Adapter<FeedItemAdapter.FeedVi
 
     private List<FeedItem> items = new ArrayList<>();
     private ReactionListener reactionListener;
+    /** Per-item emoji sets for the current user (feedItemId → reacted emojis). */
+    private Map<String, Set<String>> userReactions = new HashMap<>();
+
+    public void setUserReactions(Map<String, Set<String>> reactions) {
+        this.userReactions = reactions != null ? reactions : new HashMap<>();
+        notifyDataSetChanged();
+    }
 
     public interface ReactionListener {
         void onReaction(String feedItemId, String emoji);
@@ -103,10 +112,11 @@ public class FeedItemAdapter extends RecyclerView.Adapter<FeedItemAdapter.FeedVi
 
             // ── Reactions ──────────────────────────────────────────────
             Map<String, Long> reactions = item.getReactions();
-            bindReaction(b.btnSeedling, "\uD83C\uDF31", reactions);   // 🌱
-            bindReaction(b.btnHeart, "\uD83D\uDC9A", reactions);      // 💚
-            bindReaction(b.btnParty, "\uD83C\uDF89", reactions);      // 🎉
-            bindReaction(b.btnClap, "\uD83D\uDC4F", reactions);       // 👏
+            Set<String> myReacted = userReactions.get(item.getFeedItemId());
+            bindReaction(b.btnSeedling, "\uD83C\uDF31", reactions, myReacted);   // 🌱
+            bindReaction(b.btnHeart, "\uD83D\uDC9A", reactions, myReacted);      // 💚
+            bindReaction(b.btnParty, "\uD83C\uDF89", reactions, myReacted);      // 🎉
+            bindReaction(b.btnClap, "\uD83D\uDC4F", reactions, myReacted);       // 👏
 
             b.btnSeedling.setOnClickListener(v ->
                     reactionListener.onReaction(item.getFeedItemId(), "\uD83C\uDF31"));
@@ -119,13 +129,20 @@ public class FeedItemAdapter extends RecyclerView.Adapter<FeedItemAdapter.FeedVi
         }
 
         private void bindReaction(android.widget.TextView tv, String emoji,
-                                  Map<String, Long> reactions) {
+                                  Map<String, Long> reactions,
+                                  Set<String> myReacted) {
             long count = 0;
             if (reactions != null && reactions.containsKey(emoji)) {
                 Long val = reactions.get(emoji);
                 count = val != null ? val : 0;
             }
+            boolean isActive = myReacted != null && myReacted.contains(emoji);
             tv.setText(emoji + " " + count);
+            // Highlight the button when the user has already reacted
+            tv.setAlpha(isActive ? 1.0f : 0.55f);
+            tv.setBackgroundResource(isActive
+                    ? com.example.saturn.R.drawable.bg_reaction_active
+                    : com.example.saturn.R.drawable.bg_reaction_idle);
         }
     }
 }

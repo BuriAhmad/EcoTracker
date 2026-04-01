@@ -12,6 +12,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -28,6 +30,14 @@ public class FeedViewModel extends ViewModel {
     private final MutableLiveData<Integer> todayCount = new MutableLiveData<>(0);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
+    /**
+     * Tracks which emojis the current user has reacted to, per feed item.
+     * Key: feedItemId, Value: set of emoji strings. In-memory only.
+     */
+    private final HashMap<String, HashSet<String>> userReactedMap = new HashMap<>();
+    private final MutableLiveData<HashMap<String, HashSet<String>>> userReactions =
+            new MutableLiveData<>(new HashMap<>());
+
     private DocumentSnapshot lastVisible;
     private boolean hasMoreData = true;
     private boolean isLoadingMore = false;
@@ -43,6 +53,7 @@ public class FeedViewModel extends ViewModel {
     public LiveData<Boolean> getIsRefreshing() { return isRefreshing; }
     public LiveData<Integer> getTodayCount() { return todayCount; }
     public LiveData<String> getErrorMessage() { return errorMessage; }
+    public LiveData<HashMap<String, HashSet<String>>> getUserReactions() { return userReactions; }
     public boolean hasMoreData() { return hasMoreData; }
     public boolean isLoadingMore() { return isLoadingMore; }
 
@@ -151,26 +162,53 @@ public class FeedViewModel extends ViewModel {
     // ── Reactions ────────────────────────────────────────────────────────
 
     /**
-     * Increment a reaction on a feed item. Updates the local list optimistically.
+     * Toggle a reaction on a feed item. If the user already reacted with this emoji,
+     * the reaction is removed; otherwise it is added. Updates both the count and
+     * the per-user reaction tracking map optimistically.
      */
-    public void addReaction(String feedItemId, String emoji) {
-        // Optimistic update
+    public void toggleReaction(String feedItemId, String emoji) {
+        HashSet<String> reacted = userReactedMap.computeIfAbsent(
+                feedItemId, k -> new HashSet<>());
+        boolean alreadyReacted = reacted.contains(emoji);
+
+        // Optimistic update — reaction count
         List<FeedItem> current = feedItems.getValue();
         if (current != null) {
             for (FeedItem item : current) {
                 if (feedItemId.equals(item.getFeedItemId()) && item.getReactions() != null) {
                     Long count = item.getReactions().get(emoji);
-                    item.getReactions().put(emoji, (count != null ? count : 0) + 1);
+                    long newCount = (count != null ? count : 0) + (alreadyReacted ? -1 : 1);
+                    item.getReactions().put(emoji, Math.max(0, newCount));
                     break;
                 }
             }
-            feedItems.setValue(current); // Trigger observer
+            feedItems.setValue(current);
         }
 
+        // Optimistic update — per-user reacted set
+        if (alreadyReacted) {
+            reacted.remove(emoji);
+        } else {
+            reacted.add(emoji);
+        }
+        userReactions.setValue(userReactedMap);
+
         // Persist to Firestore
-        feedController.addReaction(feedItemId, emoji, new FeedController.DataCallback<Void>() {
-            @Override public void onSuccess(Void data) { }
-            @Override public void onError(String message) { }
-        });
+        if (alreadyReacted) {
+            feedController.removeReaction(feedItemId, emoji, new FeedController.DataCallback<Void>() {
+                @Override public void onSuccess(Void data) { }
+                @Override public void onError(String message) { }
+            });
+        } else {
+            feedController.addReaction(feedItemId, emoji, new FeedController.DataCallback<Void>() {
+                @Override public void onSuccess(Void data) { }
+                @Override public void onError(String message) { }
+            });
+        }
+    }
+
+    /** @deprecated Use toggleReaction instead */
+    public void addReaction(String feedItemId, String emoji) {
+        toggleReaction(feedItemId, emoji);
     }
 }
