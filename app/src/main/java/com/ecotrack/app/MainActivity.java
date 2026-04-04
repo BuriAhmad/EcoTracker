@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.saturn.R;
 import com.example.saturn.databinding.ActivityMainBinding;
 import com.ecotrack.app.model.NotificationPreferences;
+import com.ecotrack.app.util.Constants;
 import com.ecotrack.app.util.FirestoreSeeder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,8 +44,14 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
         checkAuthState();
 
-        // Seed Firestore with conversion factors & initial campus stats (no-op if already seeded)
-        FirestoreSeeder.seedIfNeeded();
+        // Seed Firestore only on first install — guarded by a local flag to avoid
+        // 3 network round-trips on every single app launch.
+        android.content.SharedPreferences prefs =
+                getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        if (!prefs.getBoolean(Constants.PREF_SEEDER_DONE, false)) {
+            FirestoreSeeder.seedIfNeeded();
+            prefs.edit().putBoolean(Constants.PREF_SEEDER_DONE, true).apply();
+        }
     }
 
     private void setupBottomNavDestinations() {

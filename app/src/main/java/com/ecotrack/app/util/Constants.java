@@ -50,6 +50,7 @@ public final class Constants {
     public static final String PREF_BADGE_UNLOCKS = "pref_badge_unlocks";
     public static final String PREF_USER_ROLE = "pref_user_role";
     public static final String PREF_ONBOARDING_COMPLETE = "pref_onboarding_complete";
+    public static final String PREF_SEEDER_DONE = "pref_seeder_done";
 
     // ── User Roles ───────────────────────────────────────────────────────
     public static final String ROLE_STUDENT = "student";
@@ -70,6 +71,7 @@ public final class Constants {
     // ── Firebase Storage Paths ───────────────────────────────────────────
     public static final String STORAGE_PROOFS = "proofs";
     public static final String STORAGE_AVATARS = "avatars";
+    public static final String STORAGE_BUCKET  = "gs://saturn-events.firebasestorage.app";
 
     // ── Pagination ───────────────────────────────────────────────────────
     public static final int PAGE_SIZE_LEADERBOARD = 20;

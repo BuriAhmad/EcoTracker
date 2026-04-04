@@ -74,10 +74,13 @@ public class AuthViewModel extends ViewModel {
     }
 
     /**
-     * Sign out the current user.
+     * Sign out the current user and clear all auth state so LoginFragment
+     * observers do not re-fire the previous SUCCESS state on re-attachment.
      */
     public void logout() {
         userController.logout();
+        loginState.setValue(null);
+        registerState.setValue(null);
     }
 
     /**

@@ -93,6 +93,16 @@ public class UserRepository {
     }
 
     /**
+     * Fetches the user document from local Firestore disk cache (instant, no network).
+     * The Task will fail silently on a cache miss — callers should ignore failures.
+     */
+    public Task<DocumentSnapshot> getUserDocumentCached(String userId) {
+        return db.collection(Constants.COLLECTION_USERS)
+                .document(userId)
+                .get(com.google.firebase.firestore.Source.CACHE);
+    }
+
+    /**
      * Updates specific fields on an existing user document.
      */
     public Task<Void> updateUserDocument(User user) {

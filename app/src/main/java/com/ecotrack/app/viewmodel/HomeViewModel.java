@@ -34,6 +34,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Double> totalCo2 = new MutableLiveData<>(0.0);
     private final MutableLiveData<List<ActivityLog>> recentLogs = new MutableLiveData<>();
     private final MutableLiveData<float[]> weeklyData = new MutableLiveData<>();
+    private boolean dataLoaded = false;
 
     public HomeViewModel() {
         activityRepository = new ActivityRepository();
@@ -56,81 +57,97 @@ public class HomeViewModel extends ViewModel {
     // ── Load ─────────────────────────────────────────────────────────────
 
     public void loadHome() {
+        if (dataLoaded) return;
+        dataLoaded = true;
         loadUserData();
         loadCampusStats();
-        loadWeeklyChart();
-        loadRecentLogs();
+        loadActivityLogs();
     }
 
     private void loadUserData() {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
+        // Show cached data instantly, then refresh from server
+        userRepository.getUserDocumentCached(userId)
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        User user = doc.toObject(User.class);
+                        if (user != null) processUser(user);
+                    }
+                });
         userRepository.getUserDocument(userId).addOnSuccessListener(doc -> {
             if (doc == null || !doc.exists()) return;
             User user = doc.toObject(User.class);
             if (user == null) return;
-
-            currentUser.setValue(user);
-            userStreak.setValue(user.getCurrentStreak());
-            totalPoints.setValue(user.getTotalPoints());
-
-            // Read running totals directly from user doc (set by batch write)
-            double co2 = user.getTotalCo2Saved();
-            double water = user.getTotalWaterSaved();
-            double waste = user.getTotalWasteDiverted();
-            totalCo2.setValue(co2);
-            activityCount.setValue((int) user.getTotalActivitiesLogged());
-
-            // Compute eco-score from stored totals
-            int score = EcoScoreCalculator.calculateEcoScore(
-                    co2, waste, water, user.getCurrentStreak());
-            ecoScore.setValue(score);
-            ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
+            processUser(user);
         });
     }
 
-    private void loadCampusStats() {
-        activityRepository.getCampusStats()
-                .addOnSuccessListener(campusStats::setValue);
+    private void processUser(User user) {
+        currentUser.setValue(user);
+        userStreak.setValue(user.getCurrentStreak());
+        totalPoints.setValue(user.getTotalPoints());
+        double co2 = user.getTotalCo2Saved();
+        double water = user.getTotalWaterSaved();
+        double waste = user.getTotalWasteDiverted();
+        totalCo2.setValue(co2);
+        activityCount.setValue((int) user.getTotalActivitiesLogged());
+        int score = EcoScoreCalculator.calculateEcoScore(co2, waste, water, user.getCurrentStreak());
+        ecoScore.setValue(score);
+        ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
     }
 
-    private void loadWeeklyChart() {
-        String userId = getCurrentUserId();
-        if (userId == null) return;
-
-        Date startOfWeek = DateUtils.getStartOfWeek();
-        activityRepository.getActivityLogs(userId, startOfWeek, new Date())
-                .addOnSuccessListener(logs -> {
-                    float[] daily = new float[7];
-                    for (ActivityLog log : logs) {
-                        if (log.getTimestamp() != null) {
-                            java.util.Calendar cal = java.util.Calendar.getInstance();
-                            cal.setTime(log.getTimestamp().toDate());
-                            int dow = cal.get(java.util.Calendar.DAY_OF_WEEK);
-                            int index = (dow == java.util.Calendar.SUNDAY) ? 6 : (dow - java.util.Calendar.MONDAY);
-                            if (index >= 0 && index < 7) {
-                                daily[index] += log.getPointsEarned();
-                            }
-                        }
-                    }
-                    weeklyData.setValue(daily);
+    private void loadCampusStats() {
+        // Show cached data instantly, then refresh from server
+        activityRepository.getCampusStatsCached()
+                .addOnSuccessListener(stats -> {
+                    if (stats != null) campusStats.setValue(stats);
+                });
+        activityRepository.getCampusStats()
+                .addOnSuccessListener(stats -> {
+                    if (stats != null) campusStats.setValue(stats);
                 });
     }
 
-    private void loadRecentLogs() {
+    /**
+     * Single query for the past 7 days — derives both the recent logs list and the
+     * weekly bar chart data in-memory, replacing two separate Firestore round trips.
+     */
+    private void loadActivityLogs() {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
         Date weekAgo = DateUtils.daysAgo(7);
-        activityRepository.getActivityLogs(userId, weekAgo, new Date())
+        Date now = new Date();
+
+        // Show cached data instantly
+        activityRepository.getActivityLogsCached(userId, weekAgo, now)
                 .addOnSuccessListener(logs -> {
-                    if (logs.size() > 5) {
-                        recentLogs.setValue(logs.subList(0, 5));
-                    } else {
-                        recentLogs.setValue(logs);
-                    }
+                    if (!logs.isEmpty()) processActivityLogs(logs);
                 });
+
+        // Refresh from server
+        activityRepository.getActivityLogs(userId, weekAgo, now)
+                .addOnSuccessListener(this::processActivityLogs);
+    }
+
+    private void processActivityLogs(List<ActivityLog> logs) {
+        // Recent logs — top 5 (already ordered desc by timestamp)
+        recentLogs.setValue(logs.size() > 5 ? logs.subList(0, 5) : logs);
+
+        // Weekly bar chart — Mon=0 … Sun=6
+        float[] daily = new float[7];
+        for (ActivityLog log : logs) {
+            if (log.getTimestamp() != null) {
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(log.getTimestamp().toDate());
+                int dow = cal.get(java.util.Calendar.DAY_OF_WEEK);
+                int index = (dow == java.util.Calendar.SUNDAY) ? 6 : (dow - java.util.Calendar.MONDAY);
+                if (index >= 0 && index < 7) daily[index] += log.getPointsEarned();
+            }
+        }
+        weeklyData.setValue(daily);
     }
 
     private String getCurrentUserId() {

@@ -37,6 +37,7 @@ public class DashboardViewModel extends ViewModel {
     private final MutableLiveData<List<EquivalencyTranslator.Equivalency>> equivalencies = new MutableLiveData<>();
     private final MutableLiveData<float[]> weeklyData = new MutableLiveData<>();
     private final MutableLiveData<Integer> userStreak = new MutableLiveData<>(0);
+    private boolean dataLoaded = false;
 
     public DashboardViewModel() {
         activityRepository = new ActivityRepository();
@@ -59,100 +60,99 @@ public class DashboardViewModel extends ViewModel {
     // ── Load All Data ────────────────────────────────────────────────────
 
     public void loadDashboard() {
+        if (dataLoaded) return;
+        dataLoaded = true;
         loadUserData();
-        loadRecentLogs();
-        loadWeeklyChart();
-        loadHeatmapData();
+        loadActivityLogs();
     }
 
     private void loadUserData() {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
+        // Show cached data instantly, then refresh from server
+        userRepository.getUserDocumentCached(userId)
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        User user = doc.toObject(User.class);
+                        if (user != null) processUser(user);
+                    }
+                });
         userRepository.getUserDocument(userId).addOnSuccessListener(doc -> {
             if (doc == null || !doc.exists()) return;
             User user = doc.toObject(User.class);
             if (user == null) return;
-
-            userStreak.setValue(user.getCurrentStreak());
-
-            // Read running totals directly from user doc (set by batch write)
-            double co2 = user.getTotalCo2Saved();
-            double water = user.getTotalWaterSaved();
-            double waste = user.getTotalWasteDiverted();
-            totalCo2.setValue(co2);
-            totalWater.setValue(water);
-            totalWaste.setValue(waste);
-
-            // Compute eco-score from stored totals
-            int score = EcoScoreCalculator.calculateEcoScore(
-                    co2, waste, water, user.getCurrentStreak());
-            ecoScore.setValue(score);
-            ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
-
-            // Equivalencies
-            equivalencies.setValue(EquivalencyTranslator.translate(co2));
+            processUser(user);
         });
     }
 
-    private void loadRecentLogs() {
-        String userId = getCurrentUserId();
-        if (userId == null) return;
-
-        Date weekAgo = DateUtils.daysAgo(7);
-        activityRepository.getActivityLogs(userId, weekAgo, new Date())
-                .addOnSuccessListener(logs -> {
-                    // Take most recent 5
-                    if (logs.size() > 5) {
-                        recentLogs.setValue(logs.subList(0, 5));
-                    } else {
-                        recentLogs.setValue(logs);
-                    }
-                });
+    private void processUser(User user) {
+        userStreak.setValue(user.getCurrentStreak());
+        double co2 = user.getTotalCo2Saved();
+        double water = user.getTotalWaterSaved();
+        double waste = user.getTotalWasteDiverted();
+        totalCo2.setValue(co2);
+        totalWater.setValue(water);
+        totalWaste.setValue(waste);
+        int score = EcoScoreCalculator.calculateEcoScore(co2, waste, water, user.getCurrentStreak());
+        ecoScore.setValue(score);
+        ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
+        equivalencies.setValue(EquivalencyTranslator.translate(co2));
     }
 
-    private void loadWeeklyChart() {
+    /**
+     * Single query for the past 35 days — derives recent logs, weekly chart data, and
+     * heatmap data in-memory, replacing three separate Firestore round trips.
+     */
+    private void loadActivityLogs() {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
-        Date startOfWeek = DateUtils.getStartOfWeek();
-        activityRepository.getActivityLogs(userId, startOfWeek, new Date())
-                .addOnSuccessListener(logs -> {
-                    float[] daily = new float[7]; // Mon=0, Tue=1, ... Sun=6
-                    for (ActivityLog log : logs) {
-                        if (log.getTimestamp() != null) {
-                            java.util.Calendar cal = java.util.Calendar.getInstance();
-                            cal.setTime(log.getTimestamp().toDate());
-                            int dow = cal.get(java.util.Calendar.DAY_OF_WEEK);
-                            // Calendar: SUNDAY=1, MONDAY=2, ...
-                            int index = (dow == java.util.Calendar.SUNDAY) ? 6 : (dow - java.util.Calendar.MONDAY);
-                            if (index >= 0 && index < 7) {
-                                daily[index] += log.getPointsEarned();
-                            }
-                        }
-                    }
-                    weeklyData.setValue(daily);
-                });
-    }
-
-    private void loadHeatmapData() {
-        String userId = getCurrentUserId();
-        if (userId == null) return;
-
-        // Load last 35 days for 5-week heatmap
         Date start = DateUtils.daysAgo(35);
-        activityRepository.getActivityLogs(userId, start, new Date())
+        Date now = new Date();
+
+        // Show cached data instantly
+        activityRepository.getActivityLogsCached(userId, start, now)
                 .addOnSuccessListener(logs -> {
-                    Map<LocalDate, Integer> map = new HashMap<>();
-                    for (ActivityLog log : logs) {
-                        if (log.getTimestamp() != null) {
-                            LocalDate date = log.getTimestamp().toDate().toInstant()
-                                    .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                            map.merge(date, 1, Integer::sum);
-                        }
-                    }
-                    heatmapData.setValue(map);
+                    if (!logs.isEmpty()) processActivityLogs(logs);
                 });
+
+        // Refresh from server
+        activityRepository.getActivityLogs(userId, start, now)
+                .addOnSuccessListener(this::processActivityLogs);
+    }
+
+    private void processActivityLogs(List<ActivityLog> logs) {
+        // 1. Recent logs — top 5 (already ordered desc by timestamp)
+        recentLogs.setValue(logs.size() > 5 ? logs.subList(0, 5) : logs);
+
+        // 2. Weekly chart — current week only (Mon=0 … Sun=6)
+        Date startOfWeek = DateUtils.getStartOfWeek();
+        float[] daily = new float[7];
+        for (ActivityLog log : logs) {
+            if (log.getTimestamp() != null) {
+                Date logDate = log.getTimestamp().toDate();
+                if (!logDate.before(startOfWeek)) {
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    cal.setTime(logDate);
+                    int dow = cal.get(java.util.Calendar.DAY_OF_WEEK);
+                    int index = (dow == java.util.Calendar.SUNDAY) ? 6 : (dow - java.util.Calendar.MONDAY);
+                    if (index >= 0 && index < 7) daily[index] += log.getPointsEarned();
+                }
+            }
+        }
+        weeklyData.setValue(daily);
+
+        // 3. Heatmap — all 35 days
+        Map<LocalDate, Integer> map = new HashMap<>();
+        for (ActivityLog log : logs) {
+            if (log.getTimestamp() != null) {
+                LocalDate date = log.getTimestamp().toDate().toInstant()
+                        .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                map.merge(date, 1, Integer::sum);
+            }
+        }
+        heatmapData.setValue(map);
     }
 
     private String getCurrentUserId() {

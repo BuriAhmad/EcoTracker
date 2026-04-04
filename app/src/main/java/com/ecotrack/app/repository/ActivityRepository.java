@@ -201,4 +201,42 @@ public class ActivityRepository {
                     return new CampusStats();
                 });
     }
+
+    /**
+     * Fetch campus stats from local disk cache (instant, no network).
+     * Returns null on a cache miss — callers should silently ignore failures.
+     */
+    public Task<CampusStats> getCampusStatsCached() {
+        return db.collection(Constants.COLLECTION_CAMPUS_STATS)
+                .document(Constants.DOC_CAMPUS_AGGREGATE)
+                .get(com.google.firebase.firestore.Source.CACHE)
+                .continueWith(task -> {
+                    if (!task.isSuccessful() || task.getResult() == null) return null;
+                    DocumentSnapshot doc = task.getResult();
+                    return doc.exists() ? doc.toObject(CampusStats.class) : null;
+                });
+    }
+
+    /**
+     * Fetch activity logs for a user within a date range from local disk cache.
+     * Returns an empty list on a cache miss — callers should silently ignore failures.
+     */
+    public Task<List<ActivityLog>> getActivityLogsCached(String userId, Date startDate, Date endDate) {
+        return db.collection(Constants.COLLECTION_USERS)
+                .document(userId)
+                .collection(Constants.COLLECTION_ACTIVITY_LOGS)
+                .whereGreaterThanOrEqualTo("timestamp", new Timestamp(startDate))
+                .whereLessThanOrEqualTo("timestamp", new Timestamp(endDate))
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get(com.google.firebase.firestore.Source.CACHE)
+                .continueWith(task -> {
+                    List<ActivityLog> logs = new ArrayList<>();
+                    if (!task.isSuccessful() || task.getResult() == null) return logs;
+                    for (DocumentSnapshot doc : task.getResult()) {
+                        ActivityLog log = doc.toObject(ActivityLog.class);
+                        if (log != null) logs.add(log);
+                    }
+                    return logs;
+                });
+    }
 }

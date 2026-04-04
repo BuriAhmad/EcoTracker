@@ -5,11 +5,14 @@ import com.ecotrack.app.repository.UserRepository;
 import com.ecotrack.app.util.Constants;
 import com.ecotrack.app.util.ValidationUtils;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -243,19 +246,32 @@ public class UserController {
             return;
         }
 
-        StorageReference ref = FirebaseStorage.getInstance().getReference()
+        StorageReference ref = FirebaseStorage.getInstance(Constants.STORAGE_BUCKET)
+                .getReference()
                 .child(Constants.STORAGE_AVATARS)
                 .child(userId + ".jpg");
 
-        ref.putBytes(imageBytes)
-                .addOnSuccessListener(task -> ref.getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            Map<String, Object> update = new HashMap<>();
-                            update.put("avatarUrl", uri.toString());
-                            userRepository.updateUserFields(userId, update);
-                            callback.onSuccess();
-                        })
-                        .addOnFailureListener(e -> callback.onError("Upload ok but URL failed")))
+        // Set explicit content type so Storage knows this is an image
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType("image/jpeg")
+                .build();
+
+        ref.putBytes(imageBytes, metadata)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // Use continueWithTask to properly chain the download URL
+                    // request — avoids "object does not exist" race condition
+                    return ref.getDownloadUrl();
+                })
+                .addOnSuccessListener(uri -> {
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("avatarUrl", uri.toString());
+                    userRepository.updateUserFields(userId, update)
+                            .addOnSuccessListener(aVoid -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onError("Profile save failed: " + e.getMessage()));
+                })
                 .addOnFailureListener(e -> callback.onError("Avatar upload failed: " + e.getMessage()));
     }
 

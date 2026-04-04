@@ -31,6 +31,9 @@ public class LeaderboardViewModel extends ViewModel {
 
     private DocumentSnapshot lastVisible = null;
     private boolean hasMorePages = true;
+    private static final long STALE_MS = 5 * 60_000L; // 5 minutes
+    private String lastLoadedPeriod = null;
+    private long lastLoadTime = 0;
 
     public LeaderboardViewModel() {
         db = FirebaseFirestore.getInstance();
@@ -47,14 +50,30 @@ public class LeaderboardViewModel extends ViewModel {
     // ── Actions ──────────────────────────────────────────────────────────
 
     /**
-     * Set time period and reload leaderboard from scratch.
+     * Returns true if the leaderboard should be reloaded for the given period.
+     * Prevents wiping the list on every screen resume when nothing has changed.
+     */
+    public boolean isStale(String period) {
+        List<User> current = leaderboardEntries.getValue();
+        if (current == null || current.isEmpty()) return true;
+        if (!period.equals(lastLoadedPeriod)) return true;
+        return System.currentTimeMillis() - lastLoadTime > STALE_MS;
+    }
+
+    /**
+     * Set time period. Only wipes and reloads if the period changed or the list is empty.
+     * Call isStale() first to avoid unnecessary reloads on every resume.
      */
     public void setTimePeriod(String period) {
         timePeriod.setValue(period);
-        lastVisible = null;
-        hasMorePages = true;
-        leaderboardEntries.setValue(new ArrayList<>());
-        loadLeaderboard();
+        if (!period.equals(lastLoadedPeriod)
+                || leaderboardEntries.getValue() == null
+                || leaderboardEntries.getValue().isEmpty()) {
+            lastVisible = null;
+            hasMorePages = true;
+            leaderboardEntries.setValue(new ArrayList<>());
+            loadLeaderboard();
+        }
     }
 
     /**
@@ -84,7 +103,7 @@ public class LeaderboardViewModel extends ViewModel {
             List<User> page = new ArrayList<>();
             for (DocumentSnapshot doc : snapshot) {
                 User user = doc.toObject(User.class);
-                if (user != null) page.add(user);
+                if (user != null && user.isShowOnLeaderboard()) page.add(user);
             }
 
             lastVisible = snapshot.getDocuments().get(snapshot.size() - 1);
@@ -95,6 +114,10 @@ public class LeaderboardViewModel extends ViewModel {
             if (current == null) current = new ArrayList<>();
             current.addAll(page);
             leaderboardEntries.setValue(current);
+
+            // Track freshness so isStale() can make the right call on next resume
+            lastLoadedPeriod = timePeriod.getValue();
+            lastLoadTime = System.currentTimeMillis();
 
             // Compute user rank from full list
             computeUserRank(current);

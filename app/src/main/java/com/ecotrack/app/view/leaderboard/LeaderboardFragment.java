@@ -57,8 +57,11 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Reload leaderboard on every resume
-        viewModel.setTimePeriod(getSelectedPeriod());
+        String period = getSelectedPeriod();
+        // Only reload if the data is stale (different period or older than 5 min)
+        if (viewModel.isStale(period)) {
+            viewModel.setTimePeriod(period);
+        }
     }
 
     // ── Setup ────────────────────────────────────────────────────────────

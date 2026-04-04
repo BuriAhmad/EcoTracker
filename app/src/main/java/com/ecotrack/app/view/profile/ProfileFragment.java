@@ -16,6 +16,7 @@ import com.ecotrack.app.model.Badge;
 import com.ecotrack.app.model.BadgeDefinition;
 import com.ecotrack.app.model.User;
 import com.ecotrack.app.util.Constants;
+import com.ecotrack.app.viewmodel.AuthViewModel;
 import com.ecotrack.app.viewmodel.ProfileViewModel;
 
 import com.example.saturn.R;
@@ -86,7 +87,8 @@ public class ProfileFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_profile_to_admin));
 
         binding.btnSignOut.setOnClickListener(v -> {
-            viewModel.logout();
+            AuthViewModel authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+            authViewModel.logout();
             Navigation.findNavController(v).navigate(R.id.action_profile_to_login);
         });
     }

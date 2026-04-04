@@ -15,6 +15,7 @@ import com.ecotrack.app.util.StreakManager;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isUpdating = new MutableLiveData<>(false);
+    private boolean dataLoaded = false;
 
     public ProfileViewModel() {
         db = FirebaseFirestore.getInstance();
@@ -62,6 +64,8 @@ public class ProfileViewModel extends ViewModel {
     // ── Load ─────────────────────────────────────────────────────────────
 
     public void loadProfile() {
+        if (dataLoaded) return;
+        dataLoaded = true;
         loadUserData();
         loadBadgeDefinitions();
         loadEarnedBadges();
@@ -71,27 +75,44 @@ public class ProfileViewModel extends ViewModel {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
+        // Show cached data instantly, then refresh from server
+        userRepository.getUserDocumentCached(userId)
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        User u = doc.toObject(User.class);
+                        if (u != null) processUser(u);
+                    }
+                });
         userRepository.getUserDocument(userId).addOnSuccessListener(doc -> {
             if (doc == null || !doc.exists()) return;
             User u = doc.toObject(User.class);
             if (u == null) return;
-
-            user.setValue(u);
-
-            // Compute eco-score
-            int score = EcoScoreCalculator.calculateEcoScore(
-                    u.getTotalCo2Saved(), u.getTotalWasteDiverted(),
-                    u.getTotalWaterSaved(), u.getCurrentStreak());
-            ecoScore.setValue(score);
-            ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
-
-            // Streak multiplier
-            double mult = StreakManager.getMultiplier(u.getCurrentStreak());
-            streakMultiplier.setValue(mult);
+            processUser(u);
         });
     }
 
+    private void processUser(User u) {
+        user.setValue(u);
+        int score = EcoScoreCalculator.calculateEcoScore(
+                u.getTotalCo2Saved(), u.getTotalWasteDiverted(),
+                u.getTotalWaterSaved(), u.getCurrentStreak());
+        ecoScore.setValue(score);
+        ecoLevel.setValue(EcoScoreCalculator.getLevel(score));
+        streakMultiplier.setValue(StreakManager.getMultiplier(u.getCurrentStreak()));
+    }
+
     private void loadBadgeDefinitions() {
+        // Show cached data instantly
+        db.collection(Constants.COLLECTION_BADGE_DEFINITIONS).get(Source.CACHE)
+                .addOnSuccessListener(snapshot -> {
+                    List<BadgeDefinition> defs = new ArrayList<>();
+                    for (DocumentSnapshot d : snapshot) {
+                        BadgeDefinition def = d.toObject(BadgeDefinition.class);
+                        if (def != null) defs.add(def);
+                    }
+                    if (!defs.isEmpty()) badgeDefinitions.setValue(defs);
+                });
+        // Refresh from server
         db.collection(Constants.COLLECTION_BADGE_DEFINITIONS).get()
                 .addOnSuccessListener(snapshot -> {
                     List<BadgeDefinition> defs = new ArrayList<>();
@@ -107,6 +128,18 @@ public class ProfileViewModel extends ViewModel {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
+        // Show cached data instantly
+        db.collection(Constants.COLLECTION_USERS).document(userId)
+                .collection(Constants.COLLECTION_BADGES).get(Source.CACHE)
+                .addOnSuccessListener(snapshot -> {
+                    List<Badge> badges = new ArrayList<>();
+                    for (DocumentSnapshot d : snapshot) {
+                        Badge b = d.toObject(Badge.class);
+                        if (b != null) badges.add(b);
+                    }
+                    if (!badges.isEmpty()) earnedBadges.setValue(badges);
+                });
+        // Refresh from server
         db.collection(Constants.COLLECTION_USERS).document(userId)
                 .collection(Constants.COLLECTION_BADGES).get()
                 .addOnSuccessListener(snapshot -> {
